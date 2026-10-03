@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jkn-sentinel"
+version = "0.1.0"
+description = "Prototype JKN-Sentinel: pemeriksaan kemungkinan dan kewajaran klaim rumah sakit (data tiruan)."
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "sqlalchemy>=2.0,<3",
+    "psycopg[binary]>=3.2",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "httpx>=0.27",
+]
+
+[tool.setuptools.packages.find]
+include = ["sentinel*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+filterwarnings = [
+    # Starlette baru menyarankan httpx2; fase 0 tetap memakai httpx sesuai prompt (lihat DEVLOG).
+    "ignore:Using `httpx` with `starlette.testclient` is deprecated",
+]

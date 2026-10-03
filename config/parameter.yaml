@@ -1,0 +1,84 @@
+# =============================================================================
+# Parameter JKN-Sentinel
+# =============================================================================
+# Semua batas yang dipakai mesin aturan, sensor, dan evaluasi dibaca dari file
+# ini (prinsip 4: parameter tidak di-hardcode).
+#
+# PERHATIAN: seluruh nilai di bawah ini ILUSTRATIF, wajib divalidasi bersama
+# BPJS dan organisasi profesi sebelum dipakai di luar prototipe.
+# Status validasi tiap parameter dicatat di ROADMAP.md bagian
+# "Parameter yang wajib divalidasi".
+#
+# File ini divalidasi oleh backend/sentinel/parameter.py (pydantic).
+# Kunci yang tidak dikenal akan ditolak agar salah ketik tidak lolos diam-diam.
+# =============================================================================
+
+versi_skema: 1
+
+kapasitas:
+  # Arti   : jumlah sesi fisioterapi yang wajar dilayani satu terapis dalam sehari.
+  # Satuan : sesi per terapis per hari.
+  # Aturan : KAP-01.
+  # Catatan: ILUSTRATIF, wajib divalidasi bersama BPJS dan organisasi profesi.
+  fisioterapi_sesi_per_terapis_per_hari: 8
+
+  # Arti   : lama satu sesi hemodialisa, dipakai untuk menghitung kapasitas mesin.
+  # Satuan : jam per sesi.
+  # Aturan : KAP-02, SEN-01.
+  # Catatan: ILUSTRATIF, wajib divalidasi bersama BPJS dan organisasi profesi.
+  hemodialisa_durasi_sesi_jam: 4
+
+  # Arti   : jumlah shift hemodialisa per mesin dalam sehari.
+  # Satuan : shift per mesin per hari.
+  # Aturan : KAP-02.
+  # Catatan: ILUSTRATIF, wajib divalidasi bersama BPJS dan organisasi profesi.
+  hemodialisa_shift_per_hari: 3
+
+kewajaran:
+  # Arti   : batas selisih harga tagihan di atas harga acuan sebelum ditandai.
+  # Satuan : persen (10 berarti tagihan > 110% harga acuan ditandai).
+  # Aturan : WJR-01.
+  # Catatan: ILUSTRATIF, wajib divalidasi bersama BPJS dan organisasi profesi.
+  toleransi_harga_di_atas_acuan_persen: 10
+
+  # Arti   : masa minimum sebelum alat bantu dengar boleh diganti.
+  # Satuan : tahun, dihitung per telinga (kiri dan kanan terpisah).
+  # Aturan : WJR-02.
+  # Catatan: ILUSTRATIF, wajib divalidasi bersama BPJS dan organisasi profesi;
+  #          cocokkan dengan regulasi yang berlaku.
+  alat_bantu_dengar_masa_penggantian_tahun: 5
+  alat_bantu_dengar_per_telinga: true
+
+perbandingan:
+  # Arti   : ambang robust z-score (berbasis median dan MAD) untuk menandai
+  #          rumah sakit yang menyimpang dari rumah sakit sejenis.
+  # Satuan : tanpa satuan (kelipatan MAD terskala).
+  # Aturan : BAND-01.
+  # Catatan: ILUSTRATIF, wajib divalidasi bersama BPJS dan organisasi profesi.
+  ambang_robust_z: 3.0
+
+sensor:
+  # Arti   : toleransi selisih antara jam-mesin terapi tercatat sensor dan jam
+  #          yang seharusnya terpakai untuk sesi yang ditagih.
+  # Satuan : persen (10 berarti selisih > 10% ditandai).
+  # Aturan : SEN-01.
+  # Catatan: ILUSTRATIF, wajib divalidasi bersama BPJS dan organisasi profesi.
+  toleransi_selisih_jam_mesin_persen: 10
+
+# -----------------------------------------------------------------------------
+# Bobot skor per aturan
+# -----------------------------------------------------------------------------
+# Arti   : kontribusi maksimum setiap aturan terhadap skor prioritas 0-100 per
+#          rumah sakit per periode. Jumlah semua bobot wajib 100.
+# Satuan : poin skor.
+# Catatan: nilai awal, akan disetel di fase 2 (mesin aturan).
+#          ILUSTRATIF, wajib divalidasi bersama BPJS dan organisasi profesi.
+bobot_aturan:
+  KAP-01: 15   # kapasitas fisioterapi terlampaui
+  KAP-02: 15   # kapasitas hemodialisa terlampaui
+  ULG-01: 15   # tagihan identik berulang
+  ULG-02: 10   # sesi ganda untuk pasien yang sama di hari yang sama
+  WJR-01: 10   # harga di atas harga acuan
+  WJR-02: 10   # alat bantu dengar sebelum masa penggantian
+  BAND-01: 5   # menyimpang dari rumah sakit sejenis
+  SEN-01: 20   # jam-mesin sensor tidak cocok dengan sesi ditagih
