@@ -53,12 +53,25 @@ Skor hanya dihasilkan langkah 1 dan 2. Langkah 3 (AI) hanya merangkum dan mengut
 
 Konfigurasi rahasia dan koneksi dibaca dari environment (`sentinel/config.py`, lihat `.env.example`). Parameter aturan dibaca dari `config/parameter.yaml` dan divalidasi oleh `sentinel/parameter.py`.
 
+## Tabel dan batas akses
+
+| Kelompok | Tabel | Boleh dibaca |
+|---|---|---|
+| Master (`models/master.py`) | `rumah_sakit`, `kapasitas`, `pasien`, `harga_acuan` | Semua modul |
+| Transaksi (`models/transaksi.py`) | `tagihan`, `riwayat_alat_bantu_dengar` | Semua modul |
+| Kenyataan (`models/kenyataan.py`) | `sesi_aktual` (sesi yang benar-benar terjadi) | Hanya sensor (fase 3) dan evaluasi (fase 4) |
+| Evaluasi (`models/evaluasi.py`) | `ground_truth`, `profil_rs`, `kasus_sah` | Hanya evaluasi (fase 4); tidak boleh diekspos API dashboard |
+
+Semua tabel punya `dataset_id` (`utama` atau `hidden`). Mesin aturan hanya melihat apa yang dilihat BPJS di dunia nyata: tagihan dan data master. Batas ini dijaga oleh `tests/test_batas_akses.py`.
+
+`kasus_sah` berisi kejadian sah di area batas aturan (shift hemodialisa darurat, terapis lembur, harga acuan lama) di rumah sakit jujur. Mesin aturan memang diharapkan menandainya; evaluasi menghitungnya sebagai tuduhan keliru dan melaporkannya terpisah sebagai "kasus sah yang perlu klarifikasi". Kasus ini juga menjadi bahan demo human-in-the-loop: sistem menandai, petugas mengklarifikasi.
+
 ## Modul per fase
 
 | Fase | Modul | Isi |
 |---|---|---|
 | 0 | `sentinel/main.py`, `config.py`, `db.py`, `parameter.py` | Kerangka API, `/health`, settings, loader parameter |
-| 1 | `sentinel/generator/` | Generator data tiruan berseed, tabel `ground_truth`, dataset `--hidden` |
+| 1 | `sentinel/models/`, `sentinel/generator/` | Skema tabel; generator data tiruan berseed, `sesi_aktual`, `ground_truth`, dataset `--hidden` |
 | 2 | `sentinel/rules/` | KAP-01, KAP-02, ULG-01, ULG-02, WJR-01, WJR-02, BAND-01; skor 0–100 |
 | 3 | `sentinel/sensor/` | Simulator arus, klasifikasi Edge AI, Ed25519 + hash chain, SEN-01, TAMPER_* |
 | 4 | `sentinel/evaluation/` | Recall, presisi, FPR per skenario; satu-satunya modul yang membaca ground truth |

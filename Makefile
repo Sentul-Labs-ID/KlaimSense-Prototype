@@ -24,8 +24,11 @@ test:
 	$(COMPOSE) build backend
 	$(COMPOSE) run --rm --no-deps backend python -m pytest
 
+## Bangkitkan dataset utama (seed 42) dan hidden (seed 2026); data lama dataset yang sama diganti.
 generate:
-	@echo Belum tersedia: diimplementasikan di fase 1
+	$(COMPOSE) build backend
+	$(COMPOSE) run --rm backend python -m sentinel.generator --dataset utama --seed 42 --days 90 --rs 30
+	$(COMPOSE) run --rm backend python -m sentinel.generator --hidden
 
 rules:
 	@echo Belum tersedia: diimplementasikan di fase 2
