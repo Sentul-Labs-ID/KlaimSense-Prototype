@@ -23,7 +23,7 @@ Legenda: ⬜ belum mulai · 🟡 sedang berjalan · ✅ selesai · ⏭️ ditund
 | 2 | Mesin aturan (Langkah 1: Hitung) | ✅ | Rifandi | 2 Okt 2026 | Ya |
 | 3 | Sensor IoT + Edge AI simulasi (Langkah 2) | ✅ | Rifandi | 3 Okt 2026 | Ya |
 | 4 | Evaluasi akurasi | ✅ | Rifandi | 3 Okt 2026 | Ya |
-| 5 | Dashboard petugas (Langkah 4: Putuskan) | ⬜ | Rifandi | 3 Okt 2026 | Ya |
+| 5 | Dashboard petugas (Langkah 4: Putuskan) | ✅ | Rifandi | 3 Okt 2026 | Ya |
 | 6 | RAG dan agen perangkum (Langkah 3: Rangkum) | ⬜ | Joesavat | 3 Okt 2026 | Opsional |
 | 7 | Paket demo, screenshot, naskah video | ⬜ | Rifandi | 4 Okt 2026 pagi | Ya |
 
@@ -288,6 +288,11 @@ Catat di sini setiap keputusan yang berbeda dari roadmap.
 | 2026-10-03 | 4 | Presisi: "benar" = cocok dengan kejadian ground truth | Temuan "benar" bila memuat tagihan kecurangan mana pun, atau temuan integritas pada RS-tanggal gangguan sensor; top-k memakai urutan petugas (prioritas, lalu skor) | Mis. ULG-01 yang menangkap duplikat HD dari ULANG_HARI memang menangkap kecurangan nyata |
 | 2026-10-03 | 4 | Angka proposal (4 baris + Edge AI) | Ditambah "periode bermasalah masuk daftar periksa" (23/28) dan "terdeteksi tetapi berprioritas rendah" (5/28); bagian "Analisis pasca-jalan hidden" dari `reports/catatan_pasca_hidden.md` (diminta pengguna, render ulang tanpa menghitung ulang hidden) | Angka recall level kejadian (83/86) saja melebih-lebihkan apa yang sampai ke daftar periksa petugas |
 | 2026-10-03 | 4 | Infrastruktur evaluasi | `matplotlib`; `./reports` di-mount ke container; log jalan hidden permanen `reports/log_evaluasi_hidden.json`; opsi `--hanya-laporan` | Grafik PNG; keluaran ditulis ke repo; bukti berapa kali hidden dibandingkan dengan label |
+| 2026-10-03 | 5 | Daftar endpoint API dashboard | Endpoint tambahan **`GET /meta`** (dataset tersedia, periode, daftar RS, status mode demo) (disetujui pengguna) | Navigasi, pemilih periode, dan panel demo butuh data ini tanpa memuat seluruh daftar periksa |
+| 2026-10-03 | 5 | `POST /demo/sisipkan {rs_id, skenario, jumlah_hari}` | Field opsional **`periode`** agar hari sisipan berada di bulan yang sama (disetujui pengguna) | Alur demo harus pasti: 3 hari KAP di satu bulan mencapai titik jenuh sehingga lantai prioritas terpicu |
+| 2026-10-03 | 5 | Dataset demo identik dengan utama (bangkit ulang atau salin) | **Dibangkitkan ulang** dengan seed 42 dari profil kembar utama; ID digeser (`RS-901…`, `P-900001…`, baris 90.000.001+), nama samaran sama; kunci acak sensor dipetakan ke mesin utama; skor dan prioritas 90/90 identik (disetujui pengguna) | ID adalah kunci global sehingga tidak bisa disalin apa adanya; menyalin pesan sensor dengan ID baru akan merusak tanda tangannya |
+| 2026-10-03 | 5 | Waktu di dashboard | Ditampilkan dalam WIB (Asia/Jakarta); basis data dan API tetap UTC (permintaan pengguna) | Petugas dan juri membaca waktu lokal |
+| 2026-10-03 | 5 | Infrastruktur dashboard | `DEMO_MODE` default `false` (panel demo: `DEMO_MODE=true make up`); `make demo-reset` dalam satu container; `make test` me-mount `frontend/` baca-saja; `make e2e`; dependensi dev `@playwright/test`; grafik SVG tanpa pustaka baru | Target demo-reset < 2 menit; tes batas akses frontend; uji asap dan tangkapan layar fase 7 |
 
 ---
 
@@ -300,3 +305,4 @@ Catat di sini setiap keputusan yang berbeda dari roadmap.
 | 2026-10-03 | 2 | ✅ | Mesin aturan KAP-01, KAP-02, ULG-01, ULG-02, WJR-01, WJR-02, BAND-01; tabel `temuan` dan `skor` (per RS per bulan, 0–100, maks sementara 80). Utama: 114 temuan, RS tinggi/sedang/rendah 5/3/22. Hidden: 146 temuan, 5/7/18. `make rules` ±1,5 detik per dataset; `make test` 122 lulus. Commit `7e1f8f9`. Versi 0.3.0. |
 | 2026-10-03 | 3 | ✅ | Sensor IoT + edge AI simulasi: tiga sisi terpisah (dunia/perangkat/server), pohon keputusan akurasi uji 97,75%, Ed25519 + rantai hash, TAMPER_SIG/CHAIN/GAP, SEN-01 (selisih + integritas), lantai prioritas bukti fisik. 2,95 juta pesan; RS tinggi/sedang/rendah utama 8/2/20, hidden 7/6/17. `make sensor` < 3 menit; `make test` 172 lulus. Commit `a475ca0`. Versi 0.4.0. |
 | 2026-10-03 | 4 | ✅ | Evaluasi akurasi; hidden pertama kali dibandingkan dengan label 2026-10-03T06:02:34Z (1 jalan). Hidden: kecurangan terdeteksi 83/86, periode bermasalah masuk daftar periksa 23/28, tuduhan keliru 0/26, kasus sah 2/26, RS jujur ditandai 3/60, Edge AI 97,8%. Tidak ada bug ditemukan; tidak ada parameter diubah. `make test` 189 lulus. Commit `ce4f9eb`. Versi 0.5.0. |
+| 2026-10-03 | 5 | ✅ | Dashboard petugas: daftar periksa, detail RS (rincian skor, temuan, grafik harian, grid sensor + verifikasi tanda tangan, ringkasan template), keputusan berantai hash, audit, panel demo; dataset `demo` kembar utama. Alur demo: RS Tiruan 012 Agustus 2026 rendah 3,3 → tinggi 18,3 (lantai bukti fisik) → minta klarifikasi → audit utuh. `make test` 201, uji asap Playwright lulus. Commit `b12f6e6`. Versi 0.6.0. |

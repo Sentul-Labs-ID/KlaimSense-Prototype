@@ -13,6 +13,41 @@ Satu entri per sesi kerja, **terbaru di atas**. Format:
 
 ---
 
+## 2026-10-03 — Fase 5: dashboard petugas (Langkah 4: Putuskan)
+- Dikerjakan:
+  - **API** `GET /meta`, `GET /rs`, `GET /rs/{rs_id}`, `POST /sensor/verifikasi`, `POST /keputusan`, `GET /audit`, `POST /demo/sisipkan`; galat dalam bahasa Indonesia.
+  - **Tabel `keputusan`** berantai hash.
+  - **Sisipan demo** memakai logika generator.
+  - **Frontend:** daftar periksa, detail RS, audit, panel demo; proksi POST; waktu dalam WIB.
+  - **Dataset `demo`** dan `make demo-reset`.
+  - **Uji asap Playwright** (`make e2e`).
+  - **Tes:** 201 lulus.
+- Alur demo (UI sungguhan, 1920×1080):
+  1. RS Tiruan 012, Agustus 2026: skor 3,3, rendah.
+  2. Sisipkan KAP_FISIO 3 hari.
+  3. Hasil: skor 18,3, **tinggi karena lantai bukti fisik** (skor masih di bawah ambang 20).
+  4. Detail RS: 3 temuan KAP-01 dan grafik harian.
+  5. "Minta klarifikasi" → audit: rantai utuh.
+- Keputusan:
+  - **Dataset `demo` = kembar utama.** Dibangkitkan ulang dengan seed 42, ID digeser, nama samaran sama. Kunci acak sensor dipetakan ke mesin utama sehingga sinyalnya identik. Diperiksa: 90/90 RS-periode punya skor dan prioritas yang sama dengan utama; sidik data utama dan hidden tidak berubah. Menyalin dari utama tidak dipilih: ID adalah kunci global, dan menyalin pesan sensor dengan ID baru akan merusak tanda tangan.
+  - **Batas akses diperluas.**
+    - API dan `generator/sisipan.py` dilarang menyebut tabel evaluasi dan kenyataan fisik.
+    - Frontend dipindai untuk nama tabel dan label tidak langsung ("jujur", nama skenario evaluasi).
+    - Tes rekursif memastikan respons API tanpa kunci atau nilai evaluasi.
+    - Tes perlindungan data: jumlah baris utama dan hidden serta hash berkas `reports/` sama sebelum dan sesudah alur demo.
+  - **Semua aksi tulis hanya ke `demo`.** `utama` baca-saja, hidden tidak tersedia di dashboard.
+  - **Waktu** disimpan dan dikirim API dalam UTC, ditampilkan dalam WIB.
+  - **Grafik** harian dan grid sensor ditulis dengan SVG/HTML biasa, tanpa pustaka grafik baru.
+  - **Endpoint dan field tambahan.** `GET /meta` dan field opsional `periode` di `POST /demo/sisipkan` (disetujui pengguna).
+- Dependensi baru: **`@playwright/test`** (devDependency frontend), untuk uji asap dashboard dan, di fase 7, tangkapan layar 1920×1080 secara otomatis. Browser Chromium dipasang sekali dengan `npx playwright install chromium`.
+- Masalah dan solusi:
+  - Uji asap salah tangkap pengumum rute Next.js sebagai `alert`; pemeriksaan diganti ke teks kotak galat.
+  - Skrip alur mengklik judul alih-alih tombol; diganti ke pemilih peran tombol.
+  - `make demo-reset` sempat 2 menit 10 detik saat menimpa data demo lama (1,46 juta pesan sensor). Tiga langkah digabung ke satu container: 1 menit 55 detik (pertama kali, tanpa data lama: 1 menit 42 detik). Angka ini dekat batas; bila beban mesin tinggi, bisa melewati 2 menit.
+  - Tabel beranda terbungkus dan kolom angka rincian skor rapat; diperbaiki setelah memeriksa tangkapan layar.
+- Penyimpangan dari roadmap: lihat `ROADMAP.md` (baris fase 5).
+- Berikutnya: Fase 6 (opsional M1) — RAG korpus regulasi lokal dan agen perangkum dengan kutipan verbatim, mengisi tempat "Ringkasan AI" di detail RS. Bila tidak sempat: Fase 7, paket demo dan tangkapan layar.
+
 ## 2026-10-03 — Fase 4: evaluasi akurasi
 - Dikerjakan:
   - Modul `sentinel/evaluation/` (hanya membaca; PostgreSQL READ ONLY).

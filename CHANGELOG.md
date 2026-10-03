@@ -6,6 +6,30 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/), da
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-03
+
+Fase 5: dashboard petugas (Langkah 4: Putuskan).
+
+### Added
+- API dashboard:
+  - `GET /meta`, `GET /rs` (daftar periksa), `GET /rs/{rs_id}` (detail);
+  - `POST /keputusan`, `GET /audit` (keputusan berantai SHA-256, deteksi perusakan);
+  - `POST /sensor/verifikasi` (verifikasi ulang tanda tangan dan rantai pesan sensor tersimpan);
+  - `POST /demo/sisipkan` (hanya `DEMO_MODE=true` dan dataset `demo`);
+  - pesan galat dalam bahasa Indonesia.
+- Tabel `keputusan`.
+- Dataset `demo` (kembar dataset utama dengan ID digeser) dan `make demo-reset`.
+- Frontend:
+  - **Daftar periksa:** ringkasan per prioritas, jumlah tagihan diperiksa, filter.
+  - **Detail RS:** rincian skor, temuan, grafik harian sesi vs kapasitas, grid sensor dengan verifikasi tanda tangan, ringkasan otomatis (template), panel keputusan, catatan tetap.
+  - **Audit** dan **Panel demo**; waktu ditampilkan dalam WIB.
+- Uji asap Playwright (`make e2e`) dan tes API, termasuk batas akses respons dan perlindungan dataset utama/hidden/reports; total 201 tes backend.
+
+### Changed
+- `make generate` dan `make demo-reset` juga menghapus keputusan dataset yang dibangkitkan ulang.
+- `make test` me-mount `frontend/` baca-saja untuk tes batas akses frontend.
+- Dependensi dev frontend baru: `@playwright/test`.
+
 ## [0.5.0] - 2026-10-03
 
 Fase 4: evaluasi akurasi.
