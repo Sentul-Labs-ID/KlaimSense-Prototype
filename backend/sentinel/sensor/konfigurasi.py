@@ -49,7 +49,7 @@ SEED_LATIH = 7_001  # KHUSUS pelatihan model; berbeda dari seed dataset utama (4
 HARI_LATIH = 400  # jumlah mesin-hari simulasi untuk melatih dan menguji model
 PORSI_UJI = 0.3
 KEDALAMAN_POHON = 6
-SEED_SENSOR = {"utama": 4_242, "hidden": 2_626}  # seed simulasi sinyal per dataset
+SEED_SENSOR = {"utama": 4_242, "hidden": 2_626, "demo": 4_242}  # demo = kembar utama  # seed simulasi sinyal per dataset
 
 DIREKTORI_MODEL = Path(__file__).resolve().parent / "model"
 NAMA_MODEL = "edge_pohon_keputusan.pkl"

@@ -7,7 +7,7 @@ dan seberapa besar. Dataset "hidden" sengaja memakai distribusi yang sedikit ber
 agar evaluasi akhir tidak sirkular.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 Rentang = tuple[float, float]
 RentangInt = tuple[int, int]
@@ -32,6 +32,10 @@ class ProfilDataset:
     abd_dini_porsi_halus: float  # porsi kejadian ABD_DINI yang nyaris lewat masa penggantian
     jumlah_rs_sensor: int = 10
     jumlah_kontrol_sensor_min: int = 4
+    # Nomor di nama samaran ("RS Tiruan 001"); None = sama dengan offset_rs.
+    offset_nama: int | None = None
+    # Dataset yang menjadi kembarannya (isi identik, hanya ID yang digeser).
+    kembar_dari: str | None = None
 
 
 PROFIL: dict[str, ProfilDataset] = {
@@ -140,5 +144,13 @@ class ProfilUmum:
     )
     faktor_volume_tinggi: float = 1.5
 
+
+# Dataset "demo" untuk dashboard: kembar dataset utama (seed 42, distribusi sama),
+# hanya ID yang digeser (RS-901..., P-900001..., baris mulai 90.000.001). Nama samaran
+# sama dengan utama. Semua aksi tulis dashboard hanya boleh terjadi di dataset ini.
+PROFIL["demo"] = replace(
+    PROFIL["utama"], dataset_id="demo", offset_rs=900, offset_pasien=900_000, offset_baris=90_000_000,
+    offset_nama=0, kembar_dari="utama",
+)
 
 UMUM = ProfilUmum()

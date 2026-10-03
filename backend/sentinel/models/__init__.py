@@ -12,6 +12,7 @@ Tabel dikelompokkan menurut siapa yang boleh membacanya:
 - `sensor`               : data yang diterima SERVER dari perangkat (registri kunci publik,
                            pesan valid, anomali, ringkasan harian). Boleh dibaca server,
                            mesin aturan, dan dashboard.
+- `keputusan`            : keputusan petugas (rantai hash). Ditulis dashboard, hanya dataset demo.
 - `evaluasi`             : ground truth, profil rumah sakit tiruan, dan kasus sah di
                            area batas. Hanya untuk evaluasi (fase 4); tidak boleh
                            dibaca mesin aturan atau diekspos API dashboard.
@@ -22,6 +23,7 @@ Semua tabel punya kolom `dataset_id` ("utama" atau "hidden"). Seluruh isinya dat
 from sentinel.db import Base
 from sentinel.models.evaluasi import GroundTruth, KasusSah, ProfilRS
 from sentinel.models.hasil import Skor, Temuan
+from sentinel.models.keputusan import Keputusan
 from sentinel.models.kenyataan import SesiAktual
 from sentinel.models.master import HargaAcuan, Kapasitas, Pasien, RumahSakit
 from sentinel.models.sensor import Perangkat, SensorAnomali, StatusMesinHarian, StatusSensor
@@ -35,6 +37,7 @@ __all__ = [
     "GroundTruth",
     "HargaAcuan",
     "KasusSah",
+    "Keputusan",
     "Kapasitas",
     "Pasien",
     "Perangkat",

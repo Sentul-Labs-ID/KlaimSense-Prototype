@@ -13,7 +13,7 @@ from sentinel.sensor import konfigurasi as k
 def main(argv: list[str] | None = None, engine=None) -> int:
     parser = argparse.ArgumentParser(prog="python -m sentinel.sensor", description="Simulasi sensor IoT dan edge AI.")
     parser.add_argument("perintah", nargs="?", choices=["jalankan", "latih"], default="jalankan")
-    parser.add_argument("--dataset", choices=["utama", "hidden"], default="utama")
+    parser.add_argument("--dataset", choices=["utama", "hidden", "demo"], default="utama")
     parser.add_argument("--proses", type=int, default=None, help="jumlah proses paralel (default: jumlah CPU, maks 16)")
     parser.add_argument("--jendela", type=int, default=k.PANJANG_JENDELA_DEFAULT, help="panjang jendela (menit)")
     args = parser.parse_args(argv)

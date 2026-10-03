@@ -130,9 +130,12 @@ def sinyal_mesin(
     daftar_tanggal: list[date],
     durasi_menit: int,
     seed: int,
+    kunci_acak: str | None = None,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Arus dan label per menit untuk seluruh periode (len(daftar_tanggal) x 1440)."""
-    rng = rng_untuk(seed, mesin.mesin_id)
+    """Arus dan label per menit untuk seluruh periode (len(daftar_tanggal) x 1440).
+    `kunci_acak` (default mesin_id) menentukan aliran acak; dataset kembar memakai kunci
+    mesin kembarannya agar sinyalnya identik."""
+    rng = rng_untuk(seed, kunci_acak or mesin.mesin_id)
     per_hari: dict[date, set[int]] = defaultdict(set)
     for tgl, shift in sesi:
         per_hari[tgl].add(shift)

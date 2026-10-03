@@ -30,6 +30,7 @@ Aturan ini wajib dipatuhi di **semua fase**. Jika ada konflik dengan instruksi l
   - **Perangkat** (`sensor/edge.py`, `sensor/protokol.py`): tidak boleh menyentuh basis data sama sekali; hanya menerima larik arus dan mengirim pesan bertanda tangan.
   - **Server** (ingest, ringkasan, API, mesin aturan): hanya membaca tabel `master`, `transaksi`, `sensor` (data dari perangkat), dan `hasil`. DILARANG membaca `sesi_aktual`, `ground_truth`, `profil_rs`, `kasus_sah`.
   - **Tabel evaluasi** (`ground_truth`, `profil_rs`, `kasus_sah`) hanya boleh dibaca evaluasi dan tidak boleh diekspos API dashboard. Yang boleh menulisnya hanya generator dan harness gangguan sensor (`sensor/gangguan.py`).
+- **Dashboard** (`sentinel/api/`, `frontend/`): hanya menampilkan dataset `demo` dan `utama`; dataset hidden tidak tersedia. Semua aksi tulis (keputusan petugas, sisipan demo) hanya boleh ke dataset `demo`. API dan frontend dilarang membaca atau mengekspos tabel evaluasi dan kenyataan fisik, termasuk label tidak langsung (nama skenario, label profil).
 - **Kejujuran evaluasi**: dataset utama untuk mengembangkan; dataset hidden hanya dijalankan setelah kode evaluasi selesai, setiap jalannya tercatat di `reports/log_evaluasi_hidden.json`. Dilarang mengubah parameter, bobot, ambang, atau aturan berdasarkan hasil hidden. Bug aturan/sensor yang ditemukan saat evaluasi tidak boleh diperbaiki diam-diam: laporkan, minta persetujuan, catat, dan ungkapkan di laporan.
 - **Konfigurasi rahasia** hanya lewat environment (`.env`, lihat `.env.example`). Jangan commit `.env` atau kunci API.
 
@@ -57,6 +58,9 @@ Sesuai `ROADMAP.md` bagian "Konvensi dokumentasi":
 | `make rules` | Jalankan mesin aturan (utama dan hidden), tulis `temuan` dan `skor`, cetak 10 RS teratas |
 | `make sensor` | Simulasi sensor IoT + edge AI (kedua dataset), lalu `make rules` ulang |
 | `make eval` | Evaluasi akurasi (utama lalu hidden) → `reports/evaluasi.md`, `.json`, grafik PNG |
+| `make demo-reset` | Bangun ulang dataset `demo` (kembar utama) lengkap dengan sensor, temuan, skor; hapus keputusan dan sisipan demo |
+| `DEMO_MODE=true make up` | Jalankan dashboard dengan panel demo aktif (default `DEMO_MODE=false`) |
+| `make e2e` | Uji asap Playwright terhadap dashboard yang berjalan (sekali pasang: `cd frontend && npx playwright install chromium`) |
 | `make demo` | Diisi di fase 7 |
 
 Tes cepat tanpa Docker: `cd backend && python -m venv .venv && .venv/Scripts/pip install -e ".[dev]" && .venv/Scripts/python -m pytest` (Windows; di Linux/macOS pakai `.venv/bin/`).

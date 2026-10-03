@@ -3,7 +3,7 @@
 
 COMPOSE = docker compose
 
-.PHONY: up down reset-db test generate rules sensor eval demo
+.PHONY: up down reset-db test generate rules sensor eval demo demo-reset e2e
 
 ## Bangun dan jalankan db, backend (port 8000), frontend (port 3000).
 up:
@@ -22,7 +22,7 @@ reset-db:
 ## Jalankan seluruh tes pytest backend di dalam container.
 test:
 	$(COMPOSE) build backend
-	$(COMPOSE) run --rm --no-deps backend python -m pytest
+	$(COMPOSE) run --rm --no-deps -v ./frontend:/repo/frontend:ro backend python -m pytest
 
 ## Bangkitkan dataset utama (seed 42) dan hidden (seed 2026); data lama dataset yang sama diganti.
 generate:
@@ -49,6 +49,16 @@ sensor:
 eval:
 	$(COMPOSE) build backend
 	$(COMPOSE) run --rm backend python -m sentinel.evaluation
+
+## Bangun ulang dataset demo (kembar utama, seed 42) lengkap dengan sensor, temuan, dan skor.
+## Keputusan dan sisipan demo sebelumnya ikut terhapus. Dataset utama dan hidden tidak disentuh.
+demo-reset:
+	$(COMPOSE) build backend
+	$(COMPOSE) run --rm backend sh -c "python -m sentinel.generator --dataset demo --seed 42 --days 90 --rs 30 && python -m sentinel.sensor --dataset demo && python -m sentinel.rules --dataset demo"
+
+## Uji asap Playwright terhadap dashboard yang sedang berjalan (make up).
+e2e:
+	cd frontend && npx playwright test
 
 demo:
 	@echo Belum tersedia: diimplementasikan di fase 7

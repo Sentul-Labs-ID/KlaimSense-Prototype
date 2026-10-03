@@ -43,6 +43,7 @@ class Tugas:
     panjang_jendela: int
     rencana_sig: gangguan.RencanaSig | None = None
     rencana_gap: gangguan.RencanaGap | None = None
+    kunci_acak: str | None = None  # untuk dataset kembar
 
     @property
     def device_id(self) -> str:
@@ -79,9 +80,11 @@ def kerjakan(tugas: Tugas, engine: Engine | None = None) -> dict:
     daftar_tanggal = list(tugas.daftar_tanggal)
 
     # DUNIA: arus per menit dari sesi yang benar-benar terjadi.
-    arus, label = simulator.sinyal_mesin(m, list(tugas.sesi), daftar_tanggal, tugas.durasi_menit, tugas.seed)
+    arus, label = simulator.sinyal_mesin(
+        m, list(tugas.sesi), daftar_tanggal, tugas.durasi_menit, tugas.seed, tugas.kunci_acak
+    )
     n_jendela = len(arus) // tugas.panjang_jendela
-    rng = simulator.rng_untuk(tugas.seed, m.mesin_id, "kedip")
+    rng = simulator.rng_untuk(tugas.seed, tugas.kunci_acak or m.mesin_id, "kedip")
     aktif = rng.random(n_jendela) >= k.PELUANG_JENDELA_HILANG  # kedip listrik alami
     kejadian = []
     if tugas.rencana_gap:
@@ -212,6 +215,7 @@ def jalankan_dataset(
             dataset_id, m, tuple(sesi.get(m.mesin_id, ())), tuple(daftar_tanggal), durasi_menit, seed, panjang_jendela,
             sig if sig.device_id == f"DEV-{m.mesin_id}" else None,
             gap if gap and gap.device_id == f"DEV-{m.mesin_id}" else None,
+            kunci_kembar(m.mesin_id, dataset_id),
         )
         for m in mesin
     ]
@@ -234,6 +238,18 @@ def jalankan_dataset(
     gangguan.catat_kejadian(engine, dataset_id, hasil.kejadian)
     hasil.detik = time.perf_counter() - t_mulai
     return hasil
+
+
+def kunci_kembar(mesin_id: str, dataset_id: str) -> str | None:
+    """Untuk dataset kembar (demo): ID mesin padanannya di dataset asal, mis. RS-903-HD02 -> RS-003-HD02."""
+    from sentinel.generator.profil import PROFIL
+
+    profil = PROFIL.get(dataset_id)
+    if profil is None or profil.kembar_dari is None:
+        return None
+    asal = PROFIL[profil.kembar_dari]
+    _, nomor, mesin = mesin_id.split("-")
+    return f"RS-{int(nomor) - profil.offset_rs + asal.offset_rs:03d}-{mesin}"
 
 
 def jumlah_proses_default() -> int:

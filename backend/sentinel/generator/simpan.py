@@ -7,7 +7,9 @@ from sentinel.models import Base
 
 UKURAN_BATCH = 5_000
 # Tabel turunan (hasil aturan dan data sensor) yang menjadi basi bila data dibangkitkan ulang.
-TABEL_TURUNAN = ("skor", "temuan", "status_mesin_harian", "sensor_anomali", "status_sensor", "perangkat")
+TABEL_TURUNAN = (
+    "keputusan", "skor", "temuan", "status_mesin_harian", "sensor_anomali", "status_sensor", "perangkat",
+)
 
 
 def buat_tabel(engine: Engine) -> None:

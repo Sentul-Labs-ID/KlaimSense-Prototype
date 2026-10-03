@@ -32,9 +32,16 @@ TERLARANG = {
     "sensor/simulator.py": EVALUASI,
     "sensor/pipeline.py": KENYATAAN + EVALUASI,
     "sensor/latih.py": KENYATAAN + EVALUASI,
+    "generator/sisipan.py": KENYATAAN + EVALUASI,
 }
-BOLEH_KENYATAAN = {"generator", "evaluation", "models", "sensor/simulator.py"}
-BOLEH_EVALUASI = {"generator", "evaluation", "models", "sensor/gangguan.py"}
+BOLEH_KENYATAAN = {
+    "generator/bangkit.py", "generator/simpan.py", "generator/ringkasan.py", "generator/__main__.py",
+    "evaluation", "models", "sensor/simulator.py",
+}
+BOLEH_EVALUASI = {
+    "generator/bangkit.py", "generator/simpan.py", "generator/ringkasan.py", "generator/__main__.py",
+    "evaluation", "models", "sensor/gangguan.py",
+}
 
 
 def berkas(target: str) -> list[Path]:
@@ -72,3 +79,21 @@ def test_perangkat_edge_tidak_memuat_pustaka_basis_data():
     kode = "import sys, sentinel.sensor.edge; print(sorted(m for m in sys.modules if m.startswith(('sqlalchemy', 'psycopg', 'sentinel.db', 'sentinel.models'))))"
     keluaran = subprocess.run([sys.executable, "-c", kode], capture_output=True, text=True, check=True, cwd=PAKET.parent)
     assert keluaran.stdout.strip() == "[]"
+
+
+FRONTEND = PAKET.parents[1] / "frontend"
+# Label dan tabel yang tidak boleh muncul di dashboard (termasuk label profil rumah sakit).
+TERLARANG_FRONTEND = EVALUASI + KENYATAAN + ("jujur", "disisipi", "volume_tinggi", "HD_SHIFT_TAMBAHAN", "FISIO_LEMBUR",
+                                             "HARGA_ACUAN_LAMA", "SENSOR_PALSU", "ULANG_IDENTIK", "ABD_DINI")
+
+
+def test_frontend_tidak_menyebut_tabel_atau_label_evaluasi():
+    berkas_fe = [
+        p for pola in ("app/**/*.tsx", "app/**/*.ts", "components/**/*.tsx", "lib/**/*.ts")
+        for p in FRONTEND.glob(pola)
+    ]
+    assert berkas_fe, "berkas frontend tidak ditemukan"
+    for path in berkas_fe:
+        isi = path.read_text(encoding="utf-8")
+        for kata in TERLARANG_FRONTEND:
+            assert kata not in isi, f"{path.relative_to(FRONTEND)} menyebut {kata!r}"

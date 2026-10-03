@@ -62,6 +62,7 @@ Konfigurasi rahasia dan koneksi dibaca dari environment (`sentinel/config.py`, l
 | Kenyataan (`models/kenyataan.py`) | `sesi_aktual` (sesi yang benar-benar terjadi) | Hanya simulator dunia fisik (`sensor/simulator.py`) dan evaluasi (fase 4) |
 | Sensor (`models/sensor.py`) | `perangkat` (kunci publik), `status_sensor` (pesan valid), `sensor_anomali`, `status_mesin_harian` | Server: ingest, mesin aturan (SEN-01), dashboard |
 | Hasil (`models/hasil.py`) | `temuan`, `skor` (keluaran mesin aturan) | Semua modul, termasuk dashboard |
+| Keputusan (`models/keputusan.py`) | `keputusan` (keputusan petugas, dirantai hash) | Dashboard; hanya ditulis di dataset `demo` |
 | Evaluasi (`models/evaluasi.py`) | `ground_truth`, `profil_rs`, `kasus_sah` | Hanya evaluasi (fase 4); tidak boleh diekspos API dashboard |
 
 Semua tabel punya `dataset_id` (`utama` atau `hidden`). Mesin aturan hanya melihat apa yang dilihat BPJS di dunia nyata: tagihan, data master, dan pesan yang dikirim perangkat sensor. Batas ini dijaga oleh `tests/test_batas_akses.py`.
@@ -178,6 +179,29 @@ Kasus sah "shift darurat" (sesi tambahan yang benar-benar terjadi) tetap tertand
 
 **Kejujuran.** Dataset utama dipakai untuk mengembangkan kode evaluasi. Dataset hidden dijalankan setelah kodenya selesai; waktu jalan pertamanya dicatat di `reports/log_evaluasi_hidden.json` dan di laporan. Parameter, bobot, ambang, dan aturan tidak diubah berdasarkan hasil hidden.
 
+## Langkah 4: Putuskan — dashboard petugas (fase 5)
+
+Dashboard membantu petugas BPJS memutuskan tindak lanjut. **Sistem hanya memberi prioritas pemeriksaan; keputusan selalu di tangan petugas**, dan rumah sakit diberi kesempatan menjelaskan sebelum audit.
+
+**Dataset.** Dashboard menampilkan dataset `demo` (bawaan) dan `utama` (baca-saja). Dataset hidden tidak tersedia di dashboard. `demo` adalah kembar dataset utama: dibangkitkan dengan seed yang sama, hanya ID-nya yang digeser (`RS-901…`), dan sinyal sensornya memakai kunci acak mesin padanannya, sehingga skor dan prioritasnya identik dengan utama. Semua aksi tulis (keputusan petugas, sisipan demo) hanya boleh ke `demo`. `make demo-reset` mengembalikannya ke keadaan awal.
+
+**Halaman:**
+
+| Halaman | Isi |
+|---|---|
+| Daftar periksa (`/`) | Rumah sakit × bulan, urut prioritas lalu skor; ringkasan jumlah per prioritas dan jumlah tagihan yang diperiksa; filter periode dan prioritas. |
+| Detail RS (`/rs/{id}`) | Rincian skor per aturan dalam bahasa sederhana dan alasan prioritas; temuan per aturan; grafik harian sesi ditagih vs kapasitas (hari temuan ditandai); grid sensor per mesin × shift dengan tombol verifikasi tanda tangan; ringkasan otomatis (template); panel keputusan. |
+| Audit (`/audit`) | Riwayat keputusan dan status rantai hash (utuh atau rusak, di entri mana). |
+| Panel demo (`/demo`) | Hanya bila `DEMO_MODE=true`: sisipkan kecurangan ke dataset demo dan lihat skor/prioritas sebelum dan sesudah. |
+
+**API (FastAPI):** `GET /meta`, `GET /rs`, `GET /rs/{rs_id}`, `POST /sensor/verifikasi`, `POST /keputusan`, `GET /audit`, `POST /demo/sisipkan`, serta `POST /sensor/ingest` dari fase 3. Semua respons dan pesan galat berbahasa Indonesia. Peramban memanggil aksi tulis lewat proksi `frontend/app/api/[...jalur]` yang hanya meneruskan tiga jalur POST.
+
+**Rantai keputusan.** Setiap keputusan menyimpan `prev_hash` (hash keputusan sebelumnya di dataset yang sama) dan `hash` = SHA-256 isi entri. Mengubah alasan satu keputusan lama, atau memutus sambungannya, langsung terlihat sebagai "rusak" di halaman audit.
+
+**Verifikasi sensor.** Tombol verifikasi memeriksa ulang setiap pesan tersimpan satu mesin pada satu tanggal: tanda tangan Ed25519 dengan kunci publik terdaftar, kecocokan isi dengan hash, dan sambungan `prev_hash`/`seq` ke pesan sebelumnya.
+
+**Sisipan demo.** Memakai logika generator (tarif paket, besaran lewat kapasitas, harga acuan dan toleransi). Sisipan masuk ke periode yang dipilih, lalu mesin aturan dijalankan ulang untuk dataset demo. Sisipan tidak dicatat sebagai label evaluasi.
+
 ## Modul per fase
 
 | Fase | Modul | Isi |
@@ -187,6 +211,6 @@ Kasus sah "shift darurat" (sesi tambahan yang benar-benar terjadi) tetap tertand
 | 2 | `sentinel/rules/`, `sentinel/models/hasil.py` | KAP-01, KAP-02, ULG-01, ULG-02, WJR-01, WJR-02, BAND-01; tabel `temuan` dan `skor` 0–100 |
 | 3 | `sentinel/sensor/`, `sentinel/models/sensor.py`, `sentinel/rules/aturan_sensor.py` | Simulator arus (dunia), edge AI + Ed25519 + hash chain (perangkat), ingest + ringkasan harian + `POST /sensor/ingest` (server), SEN-01, TAMPER_* |
 | 4 | `sentinel/evaluation/` | Recall per skenario, presisi tiga kelas per aturan, metrik prioritas RS-periode, integritas sensor, interval Wilson; laporan `reports/evaluasi.md`, `.json`, grafik; satu-satunya modul yang membaca label |
-| 5 | `sentinel/api/`, `frontend/` | Endpoint dashboard, halaman beranda/detail/audit, panel demo |
+| 5 | `sentinel/api/`, `sentinel/models/keputusan.py`, `sentinel/generator/sisipan.py`, `frontend/` | API dashboard, keputusan berantai hash, audit, verifikasi sensor, sisipan demo; halaman daftar periksa, detail RS, audit, panel demo; dataset `demo` |
 | 6 | `sentinel/agents/` | RAG BM25, empat agen, validator kutipan verbatim, fallback tanpa API key |
 | 7 | `Makefile`, `assets/`, `docs/NASKAH_DEMO.md` | `make demo`, screenshot, naskah video |

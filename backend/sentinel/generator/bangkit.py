@@ -284,13 +284,14 @@ class _Pembangkit:
         r.shuffle(daftar)
         for i, (indeks_prov, kelas) in enumerate(daftar):
             nomor = self.profil.offset_rs + i + 1
+            nama = (self.profil.offset_rs if self.profil.offset_nama is None else self.profil.offset_nama) + i + 1
             provinsi = katalog.PROVINSI[indeks_prov]
             self.rs.append(
                 _RS(
                     baris={
                         "id": f"RS-{nomor:03d}",
                         "dataset_id": self.dataset_id,
-                        "nama_samaran": f"RS Tiruan {nomor:03d}",
+                        "nama_samaran": f"RS Tiruan {nama:03d}",
                         "kelas": kelas,
                         "provinsi": provinsi,
                         "kab_kota": r.choice(katalog.KAB_KOTA[provinsi]),
