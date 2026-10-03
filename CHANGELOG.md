@@ -6,6 +6,28 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/), da
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-03
+
+Fase 1: generator data tiruan.
+
+### Added
+- Skema database `backend/sentinel/models/` dengan kolom `dataset_id` di semua tabel:
+  - `master`: `rumah_sakit`, `kapasitas`, `pasien`, `harga_acuan`.
+  - `transaksi`: `tagihan`, `riwayat_alat_bantu_dengar`.
+  - `kenyataan`: `sesi_aktual`.
+  - `evaluasi`: `ground_truth`, `profil_rs`, `kasus_sah`.
+- Generator data tiruan berseed `python -m sentinel.generator`:
+  - Opsi `--dataset`, `--hidden`, `--seed`, `--days`, `--rs`, `--mulai`, `--dry-run`.
+  - Ringkasan per dataset dan sidik SHA-256.
+- Tujuh skenario kecurangan tercatat di `ground_truth`: KAP_FISIO, KAP_HD, ULANG_IDENTIK, ULANG_HARI, HARGA_LEBIH, ABD_DINI, SENSOR_PALSU.
+- Rumah sakit kontrol (jujur-sibuk, kelas A volume tinggi, RS jujur bersensor) dan kasus sah di area batas (HD_SHIFT_TAMBAHAN, FISIO_LEMBUR, HARGA_ACUAN_LAMA).
+- Dataset `hidden` (seed 2026) dengan distribusi penyisipan berbeda untuk evaluasi akhir.
+- `make generate` membangkitkan dataset utama dan hidden ke PostgreSQL, mengganti data lama dataset yang sama.
+- Tes generator, penyimpanan (SQLite), dan penjaga batas akses tabel (`test_batas_akses.py`); total 70 tes.
+
+### Changed
+- `CLAUDE.md` dan `docs/ARSITEKTUR.md`: aturan batas akses tabel dan perintah `make generate`.
+
 ## [0.1.0] - 2026-10-03
 
 Fase 0: setup repo dan aturan proyek.

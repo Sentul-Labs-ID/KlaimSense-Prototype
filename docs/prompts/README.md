@@ -5,3 +5,4 @@ Setiap prompt yang dijalankan di Claude Code disimpan **verbatim** di folder ini
 | Fase | Versi | File | Tanggal | Status |
 |---|---|---|---|---|
 | 0 — Setup repo dan aturan proyek | v1 | [FASE-00_setup-repo.md](FASE-00_setup-repo.md) | 2026-10-02 | Berhasil (2 prompt lanjutan, 2026-10-03) |
+| 1 — Generator data tiruan | v1 | [FASE-01_generator-data.md](FASE-01_generator-data.md) | 2026-10-03 | Berhasil (1 prompt lanjutan) |

@@ -19,7 +19,7 @@ Legenda: ⬜ belum mulai · 🟡 sedang berjalan · ✅ selesai · ⏭️ ditund
 | Fase | Nama | Status | PIC | Target | Wajib untuk M1 |
 |---|---|---|---|---|---|
 | 0 | Setup repo dan aturan proyek | ✅ | Rifandi | 2 Okt 2026 | Ya |
-| 1 | Generator data tiruan | ⬜ | Rifandi | 2 Okt 2026 | Ya |
+| 1 | Generator data tiruan | ✅ | Rifandi | 2 Okt 2026 | Ya |
 | 2 | Mesin aturan (Langkah 1: Hitung) | ⬜ | Rifandi | 2 Okt 2026 | Ya |
 | 3 | Sensor IoT + Edge AI simulasi (Langkah 2) | ⬜ | Rifandi | 3 Okt 2026 | Ya |
 | 4 | Evaluasi akurasi | ⬜ | Rifandi | 3 Okt 2026 | Ya |
@@ -257,6 +257,17 @@ Catat di sini setiap keputusan yang berbeda dari roadmap.
 | 2026-10-03 | 0 | Python 3.11+ | Image Docker `python:3.12-slim`; venv lokal Python 3.13 | Keduanya memenuhi 3.11+ |
 | 2026-10-03 | 0 | Remote GitHub sudah berisi commit ROADMAP.md | Repo remote ternyata kosong; `ROADMAP.md` masuk lewat commit pertama `feat(fase-0)` | ROADMAP.md sebelumnya hanya ada di folder lokal dan belum pernah di-push |
 | 2026-10-03 | 0 | `make` tersedia | GNU Make dipasang di Windows lewat `winget install ezwinports.make`; dicatat di README | Windows tidak menyertakan `make` |
+| 2026-10-03 | 1 | Skema 8 tabel | Ditambah `profil_rs` (label kontrol) dan `kasus_sah` (kasus sah di area batas), keduanya hanya untuk evaluasi | `profil_rs` untuk menghitung false positive pada kontrol; `kasus_sah` diminta pengguna agar evaluasi tidak terlalu bersih |
+| 2026-10-03 | 1 | Semua batas di `config/parameter.yaml` | Batas aturan tetap dibaca dari `parameter.yaml`; distribusi simulasi (utilisasi, besaran sisipan, profil hidden) di `sentinel/generator/profil.py` | Distribusi simulasi bukan batas aturan; memisahkannya menjaga `parameter.yaml` tetap untuk validasi klinis |
+| 2026-10-03 | 1 | Definisi skenario umum | ULANG_IDENTIK hanya fisioterapi dan obat kronis; ULANG_HARI = tagihan HD kedua identik di hari yang sama; HARGA_LEBIH mengubah tagihan yang ada (bukan fiktif); hari kejadian tidak bertumpuk per kelompok layanan; skenario non-KAP tidak melewati kapasitas | Setiap kejadian punya satu penyebab yang jelas agar evaluasi per skenario jujur |
+| 2026-10-03 | 1 | ID bebas | Hidden memakai offset ID (`RS-501…`, `P-500001…`, baris mulai 50.000.001); ID tagihan diberikan setelah penyisipan dan diacak di dalam (RS, tanggal) | Utama dan hidden tidak bertabrakan; ID tidak membocorkan tagihan sisipan |
+| 2026-10-03 | 1 | `kode_item` untuk semua tagihan | Fisioterapi dan hemodialisa memakai tarif paket fiktif per kelas, `kode_item` kosong | `harga_acuan` hanya untuk obat kronis dan alat bantu dengar sesuai skema |
+| 2026-10-03 | 1 | `hari_operasional_hd` tanpa definisi | Hari buka per minggu (6 atau 7); pasien HD punya slot tetap (mesin, shift), 70% 2x/minggu, absen 3%, ada pergantian pasien dan pasien terdaftar tidak aktif | Meniru jadwal unit hemodialisa sungguhan; kapasitas fisik tidak mungkin terlampaui sesi nyata |
+| 2026-10-03 | 1 | Data normal di sekitar batas | Margin aman tetap untuk data non-sah: harga normal ≤60% toleransi, ABD normal ≥ masa + 60 hari, ABD_DINI ≤ masa − 60 hari | **Keterbatasan**: ketepatan di titik batas tidak teruji oleh data normal; wajib ditulis di laporan evaluasi fase 4. Diimbangi `kasus_sah` |
+| 2026-10-03 | 1 | Hanya rumah sakit jujur tidak pernah melewati kapasitas | Rumah sakit jujur hanya melewati kapasitas pada hari kasus sah (HD_SHIFT_TAMBAHAN, FISIO_LEMBUR) | Diminta pengguna agar false positive tidak 0% yang tidak realistis |
+| 2026-10-03 | 1 | Sebaran wilayah bebas | Dengan 30 RS hanya 3 provinsi (9 kombinasi kelas-provinsi, masing-masing ≥3 RS); kelas A hanya di Jawa Barat | Syarat minimal 3 RS per kombinasi untuk BAND-01 |
+| 2026-10-03 | 1 | Argumen CLI bebas | Minimal 20 RS dan 28 hari | Agar semua skenario dan kontrol bisa ditempatkan |
+| 2026-10-03 | 1 | Akses tabel | `test_batas_akses.py` melarang `sentinel/rules/` menyentuh `sesi_aktual` dan tabel evaluasi, serta `sentinel/api/` menyentuh tabel evaluasi | Menjaga prinsip 6 sejak awal |
 
 ---
 
@@ -265,3 +276,4 @@ Catat di sini setiap keputusan yang berbeda dari roadmap.
 | Tanggal | Fase | Status | Catatan |
 |---|---|---|---|
 | 2026-10-03 | 0 | ✅ | Kerangka monorepo jalan: `make up` (db, backend :8000, frontend :3000), `/health` OK, frontend "terhubung", `make test` 12 lulus. Commit `bd5ee14`. Versi 0.1.0. |
+| 2026-10-03 | 1 | ✅ | Generator data tiruan berseed: dataset utama (121.398 tagihan, 72 kejadian kecurangan, 14 kejadian kasus sah) dan hidden (123.655 tagihan, 86 kejadian kecurangan, 15 kejadian kasus sah). `make generate` dan `make test` 70 lulus. Commit `a9be965`. Versi 0.2.0. |

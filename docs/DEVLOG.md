@@ -13,6 +13,45 @@ Satu entri per sesi kerja, **terbaru di atas**. Format:
 
 ---
 
+## 2026-10-03 — Fase 1: generator data tiruan
+- Dikerjakan:
+  - Skema SQLAlchemy di `backend/sentinel/models/`, dikelompokkan menurut hak baca:
+    - `master`, `transaksi`: dibaca semua modul.
+    - `kenyataan` (`sesi_aktual`): hanya sensor dan evaluasi.
+    - `evaluasi` (`ground_truth`, `profil_rs`, `kasus_sah`): hanya evaluasi.
+  - Generator berseed `python -m sentinel.generator` (+ `--hidden`, `--dry-run`) dan `make generate`.
+  - 7 skenario kecurangan, kontrol (2 jujur-sibuk, 1 kelas A volume tinggi, ≥4 RS jujur bersensor), dan 3 jenis kasus sah.
+  - 70 tes lulus.
+- Ringkasan data:
+
+  | | utama (seed 42) | hidden (seed 2026) |
+  |---|---|---|
+  | RS (sensor) / profil jujur-sibuk-volume-disisipi | 30 (10) / 19-2-1-8 | 30 (10) / 17-2-1-10 |
+  | Pasien | 9.721 | 9.961 |
+  | Tagihan (fisio / HD / ABD / obat) | 121.398 (51.495 / 41.863 / 192 / 27.848) | 123.655 (50.867 / 43.895 / 192 / 28.701) |
+  | Sesi aktual (fisio / HD) | 93.065 (51.339 / 41.726) | 94.227 (50.516 / 43.711) |
+  | Kejadian KAP_FISIO / KAP_HD / ULANG_IDENTIK / ULANG_HARI / HARGA_LEBIH / ABD_DINI / SENSOR_PALSU | 13 / 14 / 8 / 9 / 7 / 7 / 14 | 14 / 14 / 7 / 17 / 13 / 7 / 14 |
+  | Kasus sah HD_SHIFT_TAMBAHAN / FISIO_LEMBUR (hari) | 4 / 3 | 4 / 2 |
+  | Kasus sah HARGA_ACUAN_LAMA (tagihan) | 7 | 9 |
+
+  Utilisasi RS normal rata-rata 53–90% (puncak harian ≤95%); kontrol sibuk 97–99% (puncak 100%).
+- Keputusan:
+  - **Kasus sah di area batas** (`kasus_sah`: shift HD darurat, terapis lembur, harga acuan lama) sengaja dibuat untuk dua tujuan:
+    - **Evaluasi yang jujur.** Tanpa kasus ini, false positive di fase 4 akan 0% dan tidak realistis. Kasus sah dihitung sebagai tuduhan keliru dan dilaporkan terpisah sebagai "kasus sah yang perlu klarifikasi".
+    - **Demo human-in-the-loop.** Sistem menandai, lalu petugas mengklarifikasi dan memutuskan (prinsip 7).
+  - **Batas akses tabel** dijaga `tests/test_batas_akses.py` sejak sekarang, sebelum mesin aturan ditulis.
+  - **ID tagihan diberikan setelah penyisipan** dan diacak per (RS, tanggal), supaya mesin aturan tidak bisa "curang" lewat urutan ID.
+  - **Determinisme.** Satu `random.Random(seed)`, tanpa iterasi `set`. Dites lintas proses dengan `PYTHONHASHSEED` berbeda. Sidik data sama antara Python 3.13 (lokal) dan 3.12 (container).
+  - **Distribusi simulasi** di `sentinel/generator/profil.py`; batas aturan tetap dari `config/parameter.yaml`.
+  - **Tidak ada dependensi baru.** Generator memakai pustaka standar Python (`random`, `hashlib`, `json`). Tes penyimpanan memakai SQLite bawaan Python.
+- Masalah dan solusi:
+  - Utilisasi harian RS normal sempat menyentuh 100% (pembulatan pada kapasitas kecil; pola jadwal HD memenuhi satu hari). Solusi: pembulatan ke bawah dan batas isian 95% per hari kerja untuk RS normal.
+  - `make generate` kedua butuh ±3 menit per dataset karena penghapusan baris induk memindai `tagihan`/`sesi_aktual` tanpa indeks. Solusi: indeks pada kolom foreign key, lalu `make reset-db`. Kini ±10 detik.
+  - Skrip penambal besar gagal lewat heredoc bash. Solusi: skrip ditulis ke berkas sementara.
+- Penyimpangan dari roadmap: lihat `ROADMAP.md` bagian Catatan penyimpangan (baris fase 1).
+- **Keterbatasan untuk laporan evaluasi fase 4.** Data non-sah memakai margin aman dari batas aturan: harga normal ≤60% toleransi, ABD normal ≥ masa penggantian + 60 hari, ABD_DINI ≤ masa penggantian − 60 hari. Ketepatan aturan tepat di titik batas tidak teruji oleh data normal. Hanya `kasus_sah` yang menguji area tepat di atas batas.
+- Berikutnya: Fase 2 — mesin aturan KAP-01, KAP-02, ULG-01, ULG-02, WJR-01, WJR-02, BAND-01, dengan tabel temuan dan skor 0–100. Tinjau ulang aturan jumlah bobot = 100.
+
 ## 2026-10-03 — Fase 0: setup repo dan aturan proyek
 - Dikerjakan: monorepo (`backend/` FastAPI + SQLAlchemy 2.x + psycopg, `frontend/` Next.js 16 + Tailwind, PostgreSQL 16 lewat docker-compose); `CLAUDE.md`; `config/parameter.yaml` beserta loader pydantic `sentinel.parameter.muat_parameter`; `GET /health`; Makefile (up, down, reset-db, test, placeholder fase 1–7); kerangka dokumentasi. 12 tes pytest lulus; frontend menampilkan status backend "terhubung". Repo dihubungkan ke `github.com/Sentul-Labs-ID/JKN-Sentinel-Prototype`.
 - Keputusan:
