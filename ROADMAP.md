@@ -20,7 +20,7 @@ Legenda: ⬜ belum mulai · 🟡 sedang berjalan · ✅ selesai · ⏭️ ditund
 |---|---|---|---|---|---|
 | 0 | Setup repo dan aturan proyek | ✅ | Rifandi | 2 Okt 2026 | Ya |
 | 1 | Generator data tiruan | ✅ | Rifandi | 2 Okt 2026 | Ya |
-| 2 | Mesin aturan (Langkah 1: Hitung) | ⬜ | Rifandi | 2 Okt 2026 | Ya |
+| 2 | Mesin aturan (Langkah 1: Hitung) | ✅ | Rifandi | 2 Okt 2026 | Ya |
 | 3 | Sensor IoT + Edge AI simulasi (Langkah 2) | ⬜ | Rifandi | 3 Okt 2026 | Ya |
 | 4 | Evaluasi akurasi | ⬜ | Rifandi | 3 Okt 2026 | Ya |
 | 5 | Dashboard petugas (Langkah 4: Putuskan) | ⬜ | Rifandi | 3 Okt 2026 | Ya |
@@ -249,7 +249,7 @@ Catat di sini setiap keputusan yang berbeda dari roadmap.
 |---|---|---|---|---|
 | 2026-10-03 | 0 | Dependensi backend: FastAPI, SQLAlchemy, psycopg, pydantic-settings, pytest, httpx | Ditambah `pyyaml` | Dibutuhkan loader `config/parameter.yaml` |
 | 2026-10-03 | 0 | Env: DATABASE_URL, ANTHROPIC_API_KEY, ANTHROPIC_MODEL, DEMO_MODE | Ditambah `PARAMETER_PATH` (opsional) dan `BACKEND_URL` (frontend) | Lokasi file parameter bisa diganti; alamat backend frontend berbeda di dalam/luar Docker |
-| 2026-10-03 | 0 | Bobot skor per aturan "nilai awal yang wajar" | Jumlah bobot divalidasi harus = 100 (KAP-01 15, KAP-02 15, ULG-01 15, ULG-02 10, WJR-01 10, WJR-02 10, BAND-01 5, SEN-01 20) | Skor 0–100 per rumah sakit langsung terbaca; **keputusan ditinjau di fase 2** |
+| 2026-10-03 | 0 | Bobot skor per aturan "nilai awal yang wajar" | Jumlah bobot divalidasi harus = 100 (KAP-01 15, KAP-02 15, ULG-01 15, ULG-02 10, WJR-01 10, WJR-02 10, BAND-01 5, SEN-01 20) | Skor 0–100 per rumah sakit langsung terbaca. **Ditutup di fase 2:** jumlah bobot 100 dipertahankan; skor = Σ bobot × keparahan (0–1) sehingga otomatis 0–100; keparahan = min(1, temuan per bulan ÷ titik jenuh) untuk KAP/ULG/WJR dan min(1, (z − ambang) ÷ ambang) untuk BAND-01; SEN-01 = 0 sampai fase 3 (maks sementara 80) |
 | 2026-10-03 | 0 | Default `ANTHROPIC_MODEL` tidak ditentukan | `claude-sonnet-5` (awalnya `claude-opus-5-5`) | Diminta pengguna; ID model dicek ulang di dokumentasi Anthropic sebelum fase 6 |
 | 2026-10-03 | 0 | Frontend menampilkan status koneksi `/health` | Dicek dari server Next.js lewat `BACKEND_URL`, bukan dari browser | Tidak perlu CORS; jalan di jaringan Docker |
 | 2026-10-03 | 0 | Tes dengan `httpx` | `httpx` tetap dipakai; peringatan deprecation Starlette (menyarankan `httpx2`) disaring di pytest | Mengikuti prompt; ditinjau jika `httpx` berhenti didukung |
@@ -268,6 +268,12 @@ Catat di sini setiap keputusan yang berbeda dari roadmap.
 | 2026-10-03 | 1 | Sebaran wilayah bebas | Dengan 30 RS hanya 3 provinsi (9 kombinasi kelas-provinsi, masing-masing ≥3 RS); kelas A hanya di Jawa Barat | Syarat minimal 3 RS per kombinasi untuk BAND-01 |
 | 2026-10-03 | 1 | Argumen CLI bebas | Minimal 20 RS dan 28 hari | Agar semua skenario dan kontrol bisa ditempatkan |
 | 2026-10-03 | 1 | Akses tabel | `test_batas_akses.py` melarang `sentinel/rules/` menyentuh `sesi_aktual` dan tabel evaluasi, serta `sentinel/api/` menyentuh tabel evaluasi | Menjaga prinsip 6 sejak awal |
+| 2026-10-03 | 2 | ULG-01: setiap salinan menjadi temuan | `tagihan_ids` temuan berisi [tagihan pertama, salinan] | Pencocokan dengan ground truth di fase 4 tidak bergantung pada tagihan mana yang ber-ID lebih kecil |
+| 2026-10-03 | 2 | BAND-01: "rasio utilisasi rata-rata" | Rata-rata rasio harian (sesi ÷ kapasitas) atas hari yang punya tagihan layanan itu; HD hanya hari unit buka; robust z dengan konstanta 1,4826; hanya sisi atas; keparahan = terbesar dari fisio dan HD; temuan: `nilai_teramati` = z, `batas` = ambang, `tagihan_ids` kosong | Definisi tidak ditentukan prompt; fisioterapi tidak punya kolom hari operasional |
+| 2026-10-03 | 2 | BAND-01 kelas-provinsi | Dengan 3 RS per kombinasi, leave-one-out menyisakan 2 pembanding sehingga 108/180 penilaian turun ke kelas; di hidden kelas A hanya 3 RS sehingga 18 penilaian dilewati | Konsekuensi sebaran data tiruan; dicatat untuk laporan evaluasi fase 4 |
+| 2026-10-03 | 2 | WJR-02: "selisih < masa penggantian" | Masa dihitung dalam bulan kalender (tanggal sama 5 tahun kemudian tidak melanggar); riwayat dihitung bila sebelum tanggal tagihan; tagihan ABD sebelumnya urut (tanggal, ID) | Definisi tepat-di-batas yang tidak bergantung pada panjang tahun kabisat |
+| 2026-10-03 | 2 | WJR-01: perbandingan harga | Eksak dengan pecahan (bukan float) | Harga tepat di batas (mis. Rp462 untuk acuan Rp420, toleransi 10%) tidak boleh tertandai karena galat pembulatan |
+| 2026-10-03 | 2 | Generator tidak menyentuh hasil aturan | `generator/simpan.py` ikut menghapus `temuan` dan `skor` dataset yang sama saat data dibangkitkan ulang | Hasil aturan menjadi basi; foreign key ke `rumah_sakit` juga menghalangi penghapusan |
 
 ---
 
@@ -277,3 +283,4 @@ Catat di sini setiap keputusan yang berbeda dari roadmap.
 |---|---|---|---|
 | 2026-10-03 | 0 | ✅ | Kerangka monorepo jalan: `make up` (db, backend :8000, frontend :3000), `/health` OK, frontend "terhubung", `make test` 12 lulus. Commit `bd5ee14`. Versi 0.1.0. |
 | 2026-10-03 | 1 | ✅ | Generator data tiruan berseed: dataset utama (121.398 tagihan, 72 kejadian kecurangan, 14 kejadian kasus sah) dan hidden (123.655 tagihan, 86 kejadian kecurangan, 15 kejadian kasus sah). `make generate` dan `make test` 70 lulus. Commit `a9be965`. Versi 0.2.0. |
+| 2026-10-03 | 2 | ✅ | Mesin aturan KAP-01, KAP-02, ULG-01, ULG-02, WJR-01, WJR-02, BAND-01; tabel `temuan` dan `skor` (per RS per bulan, 0–100, maks sementara 80). Utama: 114 temuan, RS tinggi/sedang/rendah 5/3/22. Hidden: 146 temuan, 5/7/18. `make rules` ±1,5 detik per dataset; `make test` 122 lulus. Commit `7e1f8f9`. Versi 0.3.0. |

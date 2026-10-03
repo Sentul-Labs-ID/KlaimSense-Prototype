@@ -6,6 +6,22 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/), da
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-03
+
+Fase 2: mesin aturan (Langkah 1: Hitung).
+
+### Added
+- Mesin aturan `backend/sentinel/rules/`: KAP-01 (fisioterapi), KAP-02 (hemodialisa, termasuk sesi pada hari unit tutup), ULG-01 (tagihan identik), ULG-02 (sesi HD ganda sehari), WJR-01 (harga di atas acuan + toleransi), WJR-02 (alat bantu dengar sebelum masa penggantian), BAND-01 (robust z-score leave-one-out terhadap RS sejenis, dengan fallback ke kelas).
+- Tabel `temuan` (penjelasan dari template bahasa Indonesia) dan `skor` (per RS per bulan, 0–100, rincian per aturan, versi aturan, hash parameter).
+- Bagian `skor` di `config/parameter.yaml`: titik jenuh per aturan dan ambang prioritas (tinggi ≥ 20, sedang ≥ 10), semuanya ilustratif.
+- `sentinel.parameter.hash_parameter()` (SHA-256 isi `parameter.yaml`).
+- CLI `python -m sentinel.rules --dataset utama|hidden` dan `make rules` (10 RS teratas per dataset beserta aturan pemicunya).
+- Tes per aturan (melanggar, tidak melanggar, tepat di batas), BAND-01, rumus skor, determinisme, hash, kecepatan, dan batas akses tabel lewat database; total 122 tes.
+- Definisi aturan dan rumus skor untuk pembaca non-teknis di `docs/ARSITEKTUR.md`.
+
+### Changed
+- `make generate` kini juga menghapus `temuan` dan `skor` dataset yang dibangkitkan ulang.
+
 ## [0.2.0] - 2026-10-03
 
 Fase 1: generator data tiruan.

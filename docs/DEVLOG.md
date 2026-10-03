@@ -13,6 +13,48 @@ Satu entri per sesi kerja, **terbaru di atas**. Format:
 
 ---
 
+## 2026-10-03 — Fase 2: mesin aturan (Langkah 1: Hitung)
+- Dikerjakan:
+  - Paket `sentinel/rules/` dengan tujuh aturan (KAP-01, KAP-02, ULG-01, ULG-02, WJR-01, WJR-02, BAND-01), penjelasan dari template bahasa Indonesia, skor per RS per bulan, dan CLI `python -m sentinel.rules` serta `make rules`.
+  - Tabel `temuan` dan `skor` (`models/hasil.py`).
+  - Bagian `skor` di `parameter.yaml`: titik jenuh dan ambang prioritas.
+  - `hash_parameter()` (SHA-256 isi `parameter.yaml`).
+  - Definisi aturan dan rumus skor untuk juri non-teknis di `docs/ARSITEKTUR.md`.
+  - 122 tes lulus.
+- Hasil:
+
+  | | utama | hidden |
+  |---|---|---|
+  | Temuan KAP-01 / KAP-02 / ULG-01 / ULG-02 / WJR-01 / WJR-02 / BAND-01 | 16 / 18 / 25 / 12 / 20 / 7 / 16 | 16 / 18 / 36 / 25 / 31 / 7 / 13 |
+  | RS-periode skor 0; median / P90 / maks | 49 dari 90; 0 / 15 / 30 | 46 dari 90; 0 / 18,5 / 40 |
+  | RS per prioritas tinggi / sedang / rendah (periode tertinggi) | 5 / 3 / 22 | 5 / 7 / 18 |
+
+- Keputusan:
+  - **Ambang prioritas: tinggi ≥ 20, sedang ≥ 10**, ditetapkan hanya dari sebaran skor dataset utama (tanpa melihat hidden maupun ground truth). Alasannya:
+    - 49 dari 90 RS-periode berskor 0.
+    - Skor 0 < x < 10 adalah temuan terisolasi (1–2 temuan satu aturan, atau BAND-01 saja). Jumlahnya banyak dan sebagian bisa berupa kejadian sah, jadi cukup "rendah".
+    - Ada celah alami di sebaran utama: 8,33 → 10 dan 18,33 → 21,67.
+    - Skor ≥ 10 berarti pelanggaran berulang pada satu aturan berbobot berat (mis. 2 temuan KAP dalam sebulan): layak diperiksa ("sedang").
+    - Skor ≥ 20 butuh setara satu aturan berat yang jenuh ditambah sinyal lain: prioritas pertama ("tinggi").
+  - **Titik jenuh** (temuan per bulan untuk keparahan penuh): KAP-01, KAP-02, ULG-01, ULG-02, WJR-01 = 3; WJR-02 = 2 (alat bantu dengar jauh lebih jarang); SEN-01 = 3 disiapkan untuk fase 3. Semua ILUSTRATIF.
+  - **Bobot berjumlah 100 dipertahankan.** Skor = Σ bobot × keparahan sehingga otomatis 0–100. SEN-01 bernilai 0 sampai fase 3, jadi skor maksimum sementara 80.
+  - **Interpretasi aturan:**
+    - ULG-01 menyimpan [tagihan pertama, salinan].
+    - BAND-01 = rata-rata rasio harian, robust z (1,4826), sisi atas saja, keparahan terbesar dari dua layanan.
+    - WJR-02 memakai bulan kalender.
+    - WJR-01 dibandingkan secara eksak (pecahan).
+  - **Batas akses dibuktikan dengan tes**: tabel `sesi_aktual`, `ground_truth`, `profil_rs`, `kasus_sah` di-DROP dari SQLite lalu CLI tetap jalan. `masukan.py` adalah satu-satunya pintu data ke mesin aturan.
+  - **Tidak ada dependensi baru** (`statistics`, `fractions`, `bisect`, `hashlib` dari pustaka standar Python).
+- Masalah dan solusi:
+  - Foreign key `temuan`/`skor` → `rumah_sakit` akan menghalangi `make generate` ulang. Solusi: generator ikut menghapus hasil aturan dataset yang sama, karena hasil itu memang basi.
+  - Dua tes awal salah karena data uji (MAD 0 juga di tingkat kelas) dan toleransi pembulatan; kode tidak berubah.
+  - Kecepatan: baca + hitung + simpan ±1,5 detik per dataset; indeks tambahan tidak diperlukan.
+- Penyimpangan dari roadmap: tidak ada penyimpangan dari prompt. Keputusan interpretasi dicatat di `ROADMAP.md` (baris fase 2), dan catatan "bobot berjumlah 100" ditutup.
+- Catatan untuk fase 4:
+  - BAND-01 di data tiruan sebagian besar memakai pembanding kelas (108/180), dan di hidden 18 penilaian kelas A dilewati karena hanya ada 3 RS kelas A.
+  - Kontrol sibuk diperkirakan memicu BAND-01. Ini sesuai sifatnya sebagai sinyal pendukung, dan bobotnya hanya 5.
+- Berikutnya: Fase 3 — simulator sensor IoT + Edge AI, pesan bertanda tangan Ed25519 dengan hash chain, deteksi TAMPER_*, aturan SEN-01 (mengaktifkan bobot 20).
+
 ## 2026-10-03 — Fase 1: generator data tiruan
 - Dikerjakan:
   - Skema SQLAlchemy di `backend/sentinel/models/`, dikelompokkan menurut hak baca:
