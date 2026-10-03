@@ -22,7 +22,7 @@ Legenda: ⬜ belum mulai · 🟡 sedang berjalan · ✅ selesai · ⏭️ ditund
 | 1 | Generator data tiruan | ✅ | Rifandi | 2 Okt 2026 | Ya |
 | 2 | Mesin aturan (Langkah 1: Hitung) | ✅ | Rifandi | 2 Okt 2026 | Ya |
 | 3 | Sensor IoT + Edge AI simulasi (Langkah 2) | ✅ | Rifandi | 3 Okt 2026 | Ya |
-| 4 | Evaluasi akurasi | ⬜ | Rifandi | 3 Okt 2026 | Ya |
+| 4 | Evaluasi akurasi | ✅ | Rifandi | 3 Okt 2026 | Ya |
 | 5 | Dashboard petugas (Langkah 4: Putuskan) | ⬜ | Rifandi | 3 Okt 2026 | Ya |
 | 6 | RAG dan agen perangkum (Langkah 3: Rangkum) | ⬜ | Joesavat | 3 Okt 2026 | Opsional |
 | 7 | Paket demo, screenshot, naskah video | ⬜ | Rifandi | 4 Okt 2026 pagi | Ya |
@@ -284,6 +284,10 @@ Catat di sini setiap keputusan yang berbeda dari roadmap.
 | 2026-10-03 | 3 | `make sensor` < 3 menit | Pipeline paralel per perangkat (16 proses); Dockerfile memasang dependensi sebelum kode | Verifikasi Ed25519 satu inti ±4,5 menit untuk 2,95 juta pesan; build ulang setelah ubah kode turun dari ±1 menit ke ±3,5 detik |
 | 2026-10-03 | 3 | Model dan hash konsisten | Model "firmware" di-commit (`backend/sentinel/sensor/model/`), `scikit-learn==1.9.1` dipatok, metadata mencatat lingkungan latih | Byte pickle bergantung pada versi Python/numpy; struktur pohon identik di lokal (3.13) dan container (3.12) |
 | 2026-10-03 | 3 | `make generate` mandiri | `make generate` juga menghapus data sensor dataset itu; urutan kerja menjadi `make generate` → `make sensor` | Data sensor basi setelah data dibangkitkan ulang; foreign key ke `rumah_sakit` |
+| 2026-10-03 | 4 | Kondisi RS-periode: bermasalah / hanya kasus sah / bersih | **Kondisi keempat "hanya gangguan sensor"** (RS-periode yang hanya berisi TAMPER), tidak dihitung sebagai tuduhan keliru; matriks prioritas PNG 4 kolom; definisi harfiah tetap dihitung dan dicantumkan sebagai catatan kaki (tuduhan keliru hidden 1/26) (disetujui pengguna) | Sensor yang dicabut atau dipalsukan adalah masalah nyata, bukan tuduhan keliru; prompt meminta TAMPER dilaporkan terpisah |
+| 2026-10-03 | 4 | Presisi: "benar" = cocok dengan kejadian ground truth | Temuan "benar" bila memuat tagihan kecurangan mana pun, atau temuan integritas pada RS-tanggal gangguan sensor; top-k memakai urutan petugas (prioritas, lalu skor) | Mis. ULG-01 yang menangkap duplikat HD dari ULANG_HARI memang menangkap kecurangan nyata |
+| 2026-10-03 | 4 | Angka proposal (4 baris + Edge AI) | Ditambah "periode bermasalah masuk daftar periksa" (23/28) dan "terdeteksi tetapi berprioritas rendah" (5/28); bagian "Analisis pasca-jalan hidden" dari `reports/catatan_pasca_hidden.md` (diminta pengguna, render ulang tanpa menghitung ulang hidden) | Angka recall level kejadian (83/86) saja melebih-lebihkan apa yang sampai ke daftar periksa petugas |
+| 2026-10-03 | 4 | Infrastruktur evaluasi | `matplotlib`; `./reports` di-mount ke container; log jalan hidden permanen `reports/log_evaluasi_hidden.json`; opsi `--hanya-laporan` | Grafik PNG; keluaran ditulis ke repo; bukti berapa kali hidden dibandingkan dengan label |
 
 ---
 
@@ -295,3 +299,4 @@ Catat di sini setiap keputusan yang berbeda dari roadmap.
 | 2026-10-03 | 1 | ✅ | Generator data tiruan berseed: dataset utama (121.398 tagihan, 72 kejadian kecurangan, 14 kejadian kasus sah) dan hidden (123.655 tagihan, 86 kejadian kecurangan, 15 kejadian kasus sah). `make generate` dan `make test` 70 lulus. Commit `a9be965`. Versi 0.2.0. |
 | 2026-10-03 | 2 | ✅ | Mesin aturan KAP-01, KAP-02, ULG-01, ULG-02, WJR-01, WJR-02, BAND-01; tabel `temuan` dan `skor` (per RS per bulan, 0–100, maks sementara 80). Utama: 114 temuan, RS tinggi/sedang/rendah 5/3/22. Hidden: 146 temuan, 5/7/18. `make rules` ±1,5 detik per dataset; `make test` 122 lulus. Commit `7e1f8f9`. Versi 0.3.0. |
 | 2026-10-03 | 3 | ✅ | Sensor IoT + edge AI simulasi: tiga sisi terpisah (dunia/perangkat/server), pohon keputusan akurasi uji 97,75%, Ed25519 + rantai hash, TAMPER_SIG/CHAIN/GAP, SEN-01 (selisih + integritas), lantai prioritas bukti fisik. 2,95 juta pesan; RS tinggi/sedang/rendah utama 8/2/20, hidden 7/6/17. `make sensor` < 3 menit; `make test` 172 lulus. Commit `a475ca0`. Versi 0.4.0. |
+| 2026-10-03 | 4 | ✅ | Evaluasi akurasi; hidden pertama kali dibandingkan dengan label 2026-10-03T06:02:34Z (1 jalan). Hidden: kecurangan terdeteksi 83/86, periode bermasalah masuk daftar periksa 23/28, tuduhan keliru 0/26, kasus sah 2/26, RS jujur ditandai 3/60, Edge AI 97,8%. Tidak ada bug ditemukan; tidak ada parameter diubah. `make test` 189 lulus. Commit `ce4f9eb`. Versi 0.5.0. |

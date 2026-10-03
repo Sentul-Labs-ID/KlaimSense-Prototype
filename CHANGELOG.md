@@ -6,6 +6,25 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/), da
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-03
+
+Fase 4: evaluasi akurasi.
+
+### Added
+- Modul evaluasi `backend/sentinel/evaluation/` (satu-satunya pembaca label; hanya membaca, transaksi READ ONLY):
+  - recall per skenario (aturan pasangan dan aturan apa pun);
+  - presisi tiga kelas per aturan (benar / kasus sah / keliru);
+  - metrik prioritas di level RS-periode: presisi dan recall tinggi dan tinggi+sedang, top-5/top-10, matriks prioritas × kondisi, sebaran per profil, alasan prioritas;
+  - integritas sensor dan ringkasan BAND-01;
+  - interval kepercayaan 95% Wilson untuk setiap proporsi.
+- `make eval`: evaluasi utama lalu hidden. Keluaran `reports/evaluasi.md` (bahasa Indonesia, termasuk "Angka untuk proposal", analisis pasca-jalan hidden, dan keterbatasan), `reports/evaluasi.json`, `reports/recall_per_skenario.png`, `reports/prioritas_hidden.png`.
+- Log permanen jalan evaluasi hidden (`reports/log_evaluasi_hidden.json`) dan opsi `--hanya-laporan` untuk merender ulang tanpa menghitung ulang.
+- Tes metrik pada data buatan tangan, Wilson terhadap nilai acuan, pemetaan skenario, evaluasi tidak menulis ke tabel mana pun, dan konsistensi kalimat slide; total 189 tes.
+
+### Changed
+- `docker-compose.yml`: `reports/` di-mount ke container backend.
+- Dependensi baru: `matplotlib`.
+
 ## [0.4.0] - 2026-10-03
 
 Fase 3: sensor IoT dan edge AI (Langkah 2: Cek sensor), seluruhnya simulasi.

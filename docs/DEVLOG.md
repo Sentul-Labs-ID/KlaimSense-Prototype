@@ -13,6 +13,57 @@ Satu entri per sesi kerja, **terbaru di atas**. Format:
 
 ---
 
+## 2026-10-03 — Fase 4: evaluasi akurasi
+- Dikerjakan:
+  - Modul `sentinel/evaluation/` (hanya membaca; PostgreSQL READ ONLY).
+  - `make eval`.
+  - Laporan `reports/evaluasi.md`, `evaluasi.json`, `recall_per_skenario.png`, `prioritas_hidden.png`; log jalan hidden `reports/log_evaluasi_hidden.json`.
+  - 189 tes lulus.
+- **Proses dan kejujuran:**
+  - Kode evaluasi dikembangkan dan diperiksa hanya pada dataset utama, dengan keluaran sementara di scratchpad. Uji tampilan grafik dua seri memakai salinan utama sebagai seri "hidden" palsu.
+  - **Perbandingan pertama keluaran hidden terhadap label: 2026-10-03T06:02:34+00:00** (UTC dari container, 13:02 WIB), lewat `make eval`. Hidden hanya dievaluasi satu kali.
+  - Perubahan laporan sesudahnya (permintaan pengguna) hanya dirender ulang dari `evaluasi.json` dengan `--hanya-laporan`; log hidden tidak berubah.
+  - Tidak ada parameter, bobot, ambang, atau aturan yang diubah berdasarkan hasil hidden.
+- Angka utama:
+
+  | | utama | hidden |
+  |---|---|---|
+  | Kecurangan terdeteksi (aturan pasangan) | 70/72 (97,2%) | **83/86 (96,5%; IK95% 90,2–98,8%)** |
+  | Periode bermasalah masuk daftar periksa (tinggi/sedang) | 18/23 | **23/28 (82,1%)** |
+  | Periode bermasalah terdeteksi tetapi prioritas rendah | 5/23 | **5/28 (17,9%)** |
+  | Presisi tinggi / tinggi+sedang | 14/14 / 18/20 | 12/12 / 23/26 |
+  | Recall tinggi | 14/23 | 12/28 |
+  | Tuduhan keliru (tinggi+sedang, bersih) | 0/20 | **0/26** (harfiah 1/26) |
+  | Kasus sah perlu klarifikasi | 0/20 | **2/26** |
+  | Gangguan sensor ditandai | 2/20 | 1/26 |
+  | RS jujur ikut ditandai | 2/66 | **3/60** |
+  | SENSOR_PALSU (SEN-01 selisih) | 12/14 | 11/14 |
+  | Akurasi Edge AI (fase 3) | 16.892/17.280 (97,8%) | sama |
+
+- Keputusan:
+  - **Kondisi keempat "hanya gangguan sensor"** (disetujui pengguna) agar sensor yang dicabut atau dipalsukan tidak dihitung sebagai tuduhan keliru. Definisi harfiah dicantumkan sebagai catatan kaki.
+  - Temuan "benar" bila memuat tagihan kecurangan mana pun.
+  - Top-k memakai urutan petugas.
+  - Akurasi edge dikutip dari confusion matrix fase 3.
+  - Setiap proporsi ditulis k/n dengan IK95% Wilson; ada tes yang menjamin tidak ada persentase tanpa jumlah di tabel.
+- Dependensi baru: **`matplotlib`**, untuk grafik PNG laporan (recall per skenario, matriks prioritas) yang siap ditempel di slide. Pustaka grafik standar Python; dipakai hanya oleh modul evaluasi.
+- Masalah dan solusi:
+  - Label grafik bertumpuk dan legenda menutupi batang; diperbaiki sebelum jalan hidden.
+  - Pemeriksaan statis "tanpa operasi tulis" salah tangkap `set.update(`; pola dipersempit.
+  - Patch lewat heredoc bash gagal karena pelolosan karakter; diganti skrip berkas.
+- **Pemeriksaan bug (tidak ada bug ditemukan):**
+  - Utama, sebelum hidden: dua SENSOR_PALSU yang lolos (1/12 di bawah toleransi; 1/9 tertutup sedikit kelebihan catat edge).
+  - Hidden, sesudah jalan pertama, hanya membaca:
+    - satu temuan SEN-01 keliru di RS-502 (derau klasifikasi pada RS kecil, rasio 0,89);
+    - tiga SENSOR_PALSU yang lolos (8,9% dan 9,5% di bawah toleransi; satu tertutup kelebihan catat);
+    - lima periode bermasalah berprioritas rendah, semuanya punya 1–2 temuan.
+  - Semua sesuai definisi di `docs/ARSITEKTUR.md`.
+- Penyimpangan dari roadmap: lihat `ROADMAP.md` (baris fase 4), terutama kondisi keempat.
+- Catatan untuk tahap berikutnya:
+  - Recall prioritas tinggi hidden hanya 12/28, karena ambang dan lantai ditetapkan tanpa kalibrasi. Kalibrasi bersama BPJS adalah rencana tahap hackathon dan wajib diuji dengan dataset hidden **baru** (seed baru).
+  - Pemalsuan sensor di bawah toleransi 10% sengaja tidak ditandai (pertukaran yang disadari).
+- Berikutnya: Fase 5 — dashboard petugas (beranda daftar RS, detail temuan, grafik sesi vs kapasitas, grid sensor, tombol keputusan, audit hash chain, panel demo). API dashboard dilarang mengekspos tabel evaluasi.
+
 ## 2026-10-03 — Fase 3: sensor IoT dan edge AI (Langkah 2: Cek sensor)
 - Dikerjakan:
   - Tiga sisi terpisah tegas:
