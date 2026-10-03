@@ -18,7 +18,7 @@ Legenda: ⬜ belum mulai · 🟡 sedang berjalan · ✅ selesai · ⏭️ ditund
 
 | Fase | Nama | Status | PIC | Target | Wajib untuk M1 |
 |---|---|---|---|---|---|
-| 0 | Setup repo dan aturan proyek | ⬜ | Rifandi | 2 Okt 2026 | Ya |
+| 0 | Setup repo dan aturan proyek | ✅ | Rifandi | 2 Okt 2026 | Ya |
 | 1 | Generator data tiruan | ⬜ | Rifandi | 2 Okt 2026 | Ya |
 | 2 | Mesin aturan (Langkah 1: Hitung) | ⬜ | Rifandi | 2 Okt 2026 | Ya |
 | 3 | Sensor IoT + Edge AI simulasi (Langkah 2) | ⬜ | Rifandi | 3 Okt 2026 | Ya |
@@ -247,7 +247,16 @@ Catat di sini setiap keputusan yang berbeda dari roadmap.
 
 | Tanggal | Fase | Rencana awal | Yang dilakukan | Alasan |
 |---|---|---|---|---|
-| | | | | |
+| 2026-10-03 | 0 | Dependensi backend: FastAPI, SQLAlchemy, psycopg, pydantic-settings, pytest, httpx | Ditambah `pyyaml` | Dibutuhkan loader `config/parameter.yaml` |
+| 2026-10-03 | 0 | Env: DATABASE_URL, ANTHROPIC_API_KEY, ANTHROPIC_MODEL, DEMO_MODE | Ditambah `PARAMETER_PATH` (opsional) dan `BACKEND_URL` (frontend) | Lokasi file parameter bisa diganti; alamat backend frontend berbeda di dalam/luar Docker |
+| 2026-10-03 | 0 | Bobot skor per aturan "nilai awal yang wajar" | Jumlah bobot divalidasi harus = 100 (KAP-01 15, KAP-02 15, ULG-01 15, ULG-02 10, WJR-01 10, WJR-02 10, BAND-01 5, SEN-01 20) | Skor 0–100 per rumah sakit langsung terbaca; **keputusan ditinjau di fase 2** |
+| 2026-10-03 | 0 | Default `ANTHROPIC_MODEL` tidak ditentukan | `claude-sonnet-5` (awalnya `claude-opus-5-5`) | Diminta pengguna; ID model dicek ulang di dokumentasi Anthropic sebelum fase 6 |
+| 2026-10-03 | 0 | Frontend menampilkan status koneksi `/health` | Dicek dari server Next.js lewat `BACKEND_URL`, bukan dari browser | Tidak perlu CORS; jalan di jaringan Docker |
+| 2026-10-03 | 0 | Tes dengan `httpx` | `httpx` tetap dipakai; peringatan deprecation Starlette (menyarankan `httpx2`) disaring di pytest | Mengikuti prompt; ditinjau jika `httpx` berhenti didukung |
+| 2026-10-03 | 0 | Struktur repo target | Ditambah `.gitattributes` (LF), `frontend/AGENTS.md` + `frontend/CLAUDE.md` bawaan Next.js 16, `.gitkeep` di `data/regulasi/`, `reports/`, `assets/` | Konsistensi line ending lintas OS; panduan API Next.js 16; folder target ada sejak awal |
+| 2026-10-03 | 0 | Python 3.11+ | Image Docker `python:3.12-slim`; venv lokal Python 3.13 | Keduanya memenuhi 3.11+ |
+| 2026-10-03 | 0 | Remote GitHub sudah berisi commit ROADMAP.md | Repo remote ternyata kosong; `ROADMAP.md` masuk lewat commit pertama `feat(fase-0)` | ROADMAP.md sebelumnya hanya ada di folder lokal dan belum pernah di-push |
+| 2026-10-03 | 0 | `make` tersedia | GNU Make dipasang di Windows lewat `winget install ezwinports.make`; dicatat di README | Windows tidak menyertakan `make` |
 
 ---
 
@@ -255,4 +264,4 @@ Catat di sini setiap keputusan yang berbeda dari roadmap.
 
 | Tanggal | Fase | Status | Catatan |
 |---|---|---|---|
-| | | | |
+| 2026-10-03 | 0 | ✅ | Kerangka monorepo jalan: `make up` (db, backend :8000, frontend :3000), `/health` OK, frontend "terhubung", `make test` 12 lulus. Commit `bd5ee14`. Versi 0.1.0. |
