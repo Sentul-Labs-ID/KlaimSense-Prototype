@@ -13,6 +13,67 @@ Satu entri per sesi kerja, **terbaru di atas**. Format:
 
 ---
 
+## 2026-10-03 — Fase 3: sensor IoT dan edge AI (Langkah 2: Cek sensor)
+- Dikerjakan:
+  - Tiga sisi terpisah tegas:
+    - **dunia fisik** `sensor/simulator.py`: satu-satunya modul aplikasi yang membaca `sesi_aktual`;
+    - **perangkat** `sensor/edge.py` + `protokol.py`: tanpa basis data; tes membuktikan `sqlalchemy`/`psycopg` tidak termuat;
+    - **server** `sensor/ingest.py`, `ringkasan.py`, `POST /sensor/ingest`, SEN-01.
+  - Harness `sensor/pipeline.py` + `gangguan.py` (TAMPER_SIG/TAMPER_GAP dicatat di ground truth) dan pabrik model `sensor/latih.py`.
+  - Tabel `perangkat`, `status_sensor`, `sensor_anomali`, `status_mesin_harian`.
+  - `make sensor`.
+  - Lantai prioritas bukti fisik.
+  - 172 tes lulus.
+- **Akurasi edge AI.** Pohon keputusan kedalaman 6. Fitur per jendela 10 menit: rata-rata, simpangan baku, puncak, rata-rata selisih mutlak antar-menit (fluktuasi pompa). Dilatih dengan seed khusus pelatihan 7001 (bukan 42/2026) pada 280 mesin-hari simulasi; diuji pada 120 mesin-hari lain (17.280 jendela). **Akurasi uji 97,75%.** Confusion matrix (baris = asli, kolom = prediksi):
+
+  | | mati | standby | terapi |
+  |---|---|---|---|
+  | **mati** | 9.347 | 1 | 0 |
+  | **standby** | 0 | 2.634 | 242 |
+  | **terapi** | 0 | 145 | 4.911 |
+
+  Model pertama mencapai 99,6% (terlalu bersih). Tumpang tindih standby–terapi diperbesar: lonjakan pemanas saat standby, baseline terapi lebih rendah, noise lebih besar. Kesalahan tersisa ada di batas standby/terapi, seperti yang diharapkan pada perangkat nyata. Hash model: `b5f9f57d0e586f714cf9e1f800992ae18baa4d7b6999980ebd22393a254f9baf`.
+- Hasil:
+
+  | | utama | hidden |
+  |---|---|---|
+  | Perangkat / pesan | 113 / 1.461.560 | 115 / 1.487.544 |
+  | Ditolak / anomali | 6 / TAMPER_SIG 6, TAMPER_GAP 1 | 5 / TAMPER_SIG 5, TAMPER_GAP 1 |
+  | SEN-01 selisih / integritas | 22 / 2 | 12 / 2 |
+  | Skor maks | 50 (fase 2: 30) | 40 (fase 2: 40) |
+  | RS tinggi/sedang/rendah | 8/2/20 (fase 2: 5/3/22) | 7/6/17 (fase 2: 5/7/18) |
+
+  `make sensor` (kedua dataset + `make rules`) selesai dalam 2 menit 40–53 detik.
+- Keputusan:
+  - **Ambang prioritas tetap tinggi ≥ 20, sedang ≥ 10.** Diperiksa ulang hanya dengan sebaran skor dataset utama: celah 8,33 → 10 dan 18,33 → 21,67 masih ada. Dengan ambang ini:
+    - satu temuan integritas sensor (10 poin) = "sedang";
+    - satu hari selisih jam (6,67) = "rendah";
+    - tiga hari selisih (20) = "tinggi".
+  - **Lantai prioritas** (permintaan pengguna, keputusan prinsip, bukan hasil melihat label). Aturan bukti fisik (KAP-01, KAP-02, SEN-01 selisih) yang jenuh dalam satu periode membuat prioritas minimal "tinggi". Skor tidak berubah; `skor.alasan_prioritas` menjelaskan labelnya. Efek: 3 RS-periode di utama dan 1 di hidden naik ke "tinggi".
+  - **Kunci perangkat diturunkan dari seed HANYA untuk simulasi.** Server hanya menyimpan kunci publik.
+  - **SEN-01 tidak menuduh dari data bolong.** Bila data hilang > 5% (perangkat × 1.440 menit), hari itu menjadi temuan integritas, bukan selisih.
+  - **Paralel per perangkat** (16 proses). Rantai tiap perangkat independen dan keacakan diturunkan dari (seed, ID perangkat), jadi hasilnya deterministik di urutan proses mana pun.
+- Dependensi baru dan alasannya:
+  - **`cryptography`**: tanda tangan Ed25519 perangkat. Pustaka kriptografi standar Python, berbasis OpenSSL; jangan pernah menulis kriptografi sendiri.
+  - **`scikit-learn==1.9.1`**: pohon keputusan edge, sesuai prompt. Versi dipatok tepat agar file model (pickle) dan hash-nya konsisten di lokal dan container.
+  - **`numpy`**: simulasi arus per menit dan fitur jendela secara vektor. Juga dependensi scikit-learn; tanpa numpy, simulasi 33 juta menit per dataset terlalu lambat.
+- Masalah dan solusi:
+  - Prompt pertama terpotong; pekerjaan baru dimulai setelah prompt lengkap diterima.
+  - Verifikasi Ed25519 satu inti ±11.000 pesan/detik (±4,5 menit untuk 2,95 juta pesan). Solusi: paralel per perangkat.
+  - Byte pickle model berbeda antar-lingkungan (Python 3.13 lokal vs 3.12 container) dan antar-keadaan proses, walau struktur pohon identik. Tes membandingkan struktur, dan hash hanya di proses baru dengan lingkungan sama.
+  - Dockerfile menyalin kode sebelum `pip install`, sehingga setiap ubah kode memasang ulang dependensi (`make sensor` sempat 3 menit 56 detik). Urutan layer diperbaiki.
+  - Ringkasan CLI aturan memilih periode berskor tertinggi untuk prioritas per RS. Diperbaiki menjadi prioritas tertinggi dulu, lalu skor.
+- **Keterbukaan soal pemeriksaan kalibrasi sensor:**
+  - Pemeriksaan kalibrasi dilakukan dengan membuka `sesi_aktual` dan `ground_truth` **langsung di basis data, pada dataset UTAMA saja**, hanya sebagai pemeriksaan kewarasan.
+  - Hasilnya: rasio jam terapi tercatat ÷ jam sesi nyata pada hari jujur rata-rata 1,02 (P05 0,96, minimum 0,917, di atas batas 0,90), dan 22 temuan selisih utama jatuh pada hari kejadian yang disisipkan.
+  - **Tidak ada parameter yang diubah berdasarkan pemeriksaan itu.** Pengaturan noise dan model sudah final sebelum pemeriksaan; ambang dan titik jenuh tidak berubah.
+- **Status dataset hidden terhadap labelnya (dinyatakan akurat):**
+  - **Sejak mesin aturan dibuat di fase 2, keluaran dataset hidden (temuan, skor, data sensor) belum pernah dibandingkan dengan labelnya**, dan tidak ada parameter aturan, skor, atau sensor yang berasal dari hidden.
+  - Satu catatan jujur: di fase 1, saat memvalidasi generator (sebelum ada mesin aturan), profil per RS, daftar skenario per RS, dan besaran kejadian KAP dataset hidden sempat dicetak sekali. Ringkasan jumlah kejadian per skenario hidden juga dilaporkan di fase 1.
+  - Hal ini perlu disebut di laporan evaluasi fase 4.
+- Penyimpangan dari roadmap: lihat `ROADMAP.md` bagian Catatan penyimpangan (baris fase 3), termasuk lantai prioritas sebagai penyimpangan dari rumus prioritas fase 2.
+- Berikutnya: Fase 4 — evaluasi akurasi (recall, presisi, FPR per skenario; kasus sah dilaporkan terpisah sebagai "kasus sah yang perlu klarifikasi"; dataset hidden dicetak terpisah; keterbatasan: margin aman data non-sah, pembanding BAND-01 terbatas, catatan paparan hidden di fase 1).
+
 ## 2026-10-03 — Fase 2: mesin aturan (Langkah 1: Hitung)
 - Dikerjakan:
   - Paket `sentinel/rules/` dengan tujuh aturan (KAP-01, KAP-02, ULG-01, ULG-02, WJR-01, WJR-02, BAND-01), penjelasan dari template bahasa Indonesia, skor per RS per bulan, dan CLI `python -m sentinel.rules` serta `make rules`.

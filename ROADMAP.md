@@ -21,7 +21,7 @@ Legenda: ⬜ belum mulai · 🟡 sedang berjalan · ✅ selesai · ⏭️ ditund
 | 0 | Setup repo dan aturan proyek | ✅ | Rifandi | 2 Okt 2026 | Ya |
 | 1 | Generator data tiruan | ✅ | Rifandi | 2 Okt 2026 | Ya |
 | 2 | Mesin aturan (Langkah 1: Hitung) | ✅ | Rifandi | 2 Okt 2026 | Ya |
-| 3 | Sensor IoT + Edge AI simulasi (Langkah 2) | ⬜ | Rifandi | 3 Okt 2026 | Ya |
+| 3 | Sensor IoT + Edge AI simulasi (Langkah 2) | ✅ | Rifandi | 3 Okt 2026 | Ya |
 | 4 | Evaluasi akurasi | ⬜ | Rifandi | 3 Okt 2026 | Ya |
 | 5 | Dashboard petugas (Langkah 4: Putuskan) | ⬜ | Rifandi | 3 Okt 2026 | Ya |
 | 6 | RAG dan agen perangkum (Langkah 3: Rangkum) | ⬜ | Joesavat | 3 Okt 2026 | Opsional |
@@ -274,6 +274,16 @@ Catat di sini setiap keputusan yang berbeda dari roadmap.
 | 2026-10-03 | 2 | WJR-02: "selisih < masa penggantian" | Masa dihitung dalam bulan kalender (tanggal sama 5 tahun kemudian tidak melanggar); riwayat dihitung bila sebelum tanggal tagihan; tagihan ABD sebelumnya urut (tanggal, ID) | Definisi tepat-di-batas yang tidak bergantung pada panjang tahun kabisat |
 | 2026-10-03 | 2 | WJR-01: perbandingan harga | Eksak dengan pecahan (bukan float) | Harga tepat di batas (mis. Rp462 untuk acuan Rp420, toleransi 10%) tidak boleh tertandai karena galat pembulatan |
 | 2026-10-03 | 2 | Generator tidak menyentuh hasil aturan | `generator/simpan.py` ikut menghapus `temuan` dan `skor` dataset yang sama saat data dibangkitkan ulang | Hasil aturan menjadi basi; foreign key ke `rumah_sakit` juga menghalangi penghapusan |
+| 2026-10-03 | 3 | `sensor_anomali(jenis, device_id, waktu, keterangan)` | Ditambah `dataset_id` dan `durasi_menit` (disetujui pengguna) | Konvensi `dataset_id` di semua tabel; durasi untuk template TAMPER_GAP tanpa mengurai teks |
+| 2026-10-03 | 3 | Skema `temuan` fase 2 | Ditambah kolom `kategori` (`selisih`/`integritas`, khusus SEN-01) lewat migrasi `ALTER TABLE` (disetujui pengguna) | Dua keparahan SEN-01 dihitung dari kategori temuan |
+| 2026-10-03 | 3 | `status_sensor` = pesan valid | Juga menyimpan `hash` dan `tanda_tangan` (bytea) (disetujui pengguna) | Pesan bisa diverifikasi ulang untuk audit |
+| 2026-10-03 | 3 | **Prioritas fase 2 = ambang skor saja** | **Lantai prioritas**: aturan bukti fisik (`skor.aturan_bukti_fisik`: KAP-01, KAP-02, SEN-01-selisih) yang jenuh dalam satu periode membuat prioritas minimal "tinggi"; skor tidak berubah; `skor.alasan_prioritas` menyimpan alasannya | Diminta pengguna: kapasitas fisik yang terlampaui berulang kali adalah bukti terkuat dan tidak boleh berakhir di "sedang" hanya karena bobot satu aturan maksimal 15. Keputusan prinsip, bukan hasil melihat label |
+| 2026-10-03 | 3 | N jendela TAMPER_GAP dan batas data hilang tidak ditentukan | `sensor.gap_maks_jendela: 3` dan `sensor.batas_data_hilang_persen: 5` (dari jumlah perangkat × 1.440 menit) di `parameter.yaml`; titik jenuh `SEN-01-selisih: 3`, `SEN-01-integritas: 2` | Semua batas di `parameter.yaml` (prinsip 4) |
+| 2026-10-03 | 3 | Jadwal shift bebas | 05:00 / 09:50 / 14:40 / 19:30–24:00 (shift 4 darurat) di `sensor/konfigurasi.py`; semua slot dalam satu tanggal | Sesi tidak melintasi tengah malam; batas slot kelipatan 10 menit |
+| 2026-10-03 | 3 | Kebijakan ingest tidak ditentukan rinci | Pesan seq maju dengan rantai putus tetap disimpan (TAMPER_CHAIN); pesan ulangan ditolak; perangkat tak terdaftar atau identitas tak cocok = TAMPER_SIG | Data bertanda tangan sah tidak dibuang; replay tidak boleh menggandakan jam terapi |
+| 2026-10-03 | 3 | `make sensor` < 3 menit | Pipeline paralel per perangkat (16 proses); Dockerfile memasang dependensi sebelum kode | Verifikasi Ed25519 satu inti ±4,5 menit untuk 2,95 juta pesan; build ulang setelah ubah kode turun dari ±1 menit ke ±3,5 detik |
+| 2026-10-03 | 3 | Model dan hash konsisten | Model "firmware" di-commit (`backend/sentinel/sensor/model/`), `scikit-learn==1.9.1` dipatok, metadata mencatat lingkungan latih | Byte pickle bergantung pada versi Python/numpy; struktur pohon identik di lokal (3.13) dan container (3.12) |
+| 2026-10-03 | 3 | `make generate` mandiri | `make generate` juga menghapus data sensor dataset itu; urutan kerja menjadi `make generate` → `make sensor` | Data sensor basi setelah data dibangkitkan ulang; foreign key ke `rumah_sakit` |
 
 ---
 
@@ -284,3 +294,4 @@ Catat di sini setiap keputusan yang berbeda dari roadmap.
 | 2026-10-03 | 0 | ✅ | Kerangka monorepo jalan: `make up` (db, backend :8000, frontend :3000), `/health` OK, frontend "terhubung", `make test` 12 lulus. Commit `bd5ee14`. Versi 0.1.0. |
 | 2026-10-03 | 1 | ✅ | Generator data tiruan berseed: dataset utama (121.398 tagihan, 72 kejadian kecurangan, 14 kejadian kasus sah) dan hidden (123.655 tagihan, 86 kejadian kecurangan, 15 kejadian kasus sah). `make generate` dan `make test` 70 lulus. Commit `a9be965`. Versi 0.2.0. |
 | 2026-10-03 | 2 | ✅ | Mesin aturan KAP-01, KAP-02, ULG-01, ULG-02, WJR-01, WJR-02, BAND-01; tabel `temuan` dan `skor` (per RS per bulan, 0–100, maks sementara 80). Utama: 114 temuan, RS tinggi/sedang/rendah 5/3/22. Hidden: 146 temuan, 5/7/18. `make rules` ±1,5 detik per dataset; `make test` 122 lulus. Commit `7e1f8f9`. Versi 0.3.0. |
+| 2026-10-03 | 3 | ✅ | Sensor IoT + edge AI simulasi: tiga sisi terpisah (dunia/perangkat/server), pohon keputusan akurasi uji 97,75%, Ed25519 + rantai hash, TAMPER_SIG/CHAIN/GAP, SEN-01 (selisih + integritas), lantai prioritas bukti fisik. 2,95 juta pesan; RS tinggi/sedang/rendah utama 8/2/20, hidden 7/6/17. `make sensor` < 3 menit; `make test` 172 lulus. Commit `a475ca0`. Versi 0.4.0. |

@@ -6,6 +6,33 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/), da
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-03
+
+Fase 3: sensor IoT dan edge AI (Langkah 2: Cek sensor), seluruhnya simulasi.
+
+### Added
+- Simulator dunia fisik `sensor/simulator.py`: arus listrik per menit per mesin hemodialisa dari sesi yang benar-benar terjadi. Pola mati/standby/terapi dengan noise dan tumpang tindih; nilai ampere ilustratif.
+- Edge AI `sensor/edge.py`:
+  - fitur per jendela 10 menit;
+  - pohon keputusan scikit-learn (akurasi uji 97,75%, dilatih dengan seed khusus pelatihan);
+  - pesan ringkasan status per jendela, ditandatangani Ed25519 dan dirantai hash.
+- Model edge tersimpan sebagai "firmware" (`backend/sentinel/sensor/model/`) beserta hash SHA-256 dan metadata; `python -m sentinel.sensor latih` untuk melatih ulang.
+- Server:
+  - fungsi `ingest` dan endpoint `POST /sensor/ingest` (satu pesan atau batch) dengan deteksi TAMPER_SIG, TAMPER_CHAIN, TAMPER_GAP;
+  - tabel `perangkat`, `status_sensor`, `sensor_anomali`, `status_mesin_harian`.
+- Skenario gangguan di kedua dataset (pesan palsu, sensor dicabut ±2 jam), dicatat di ground truth.
+- Aturan SEN-01 (selisih jam-mesin terapi dan integritas data sensor); skor maksimum kini 100.
+- Lantai prioritas: aturan bukti fisik yang jenuh (KAP-01, KAP-02, SEN-01 selisih) membuat prioritas minimal "tinggi"; kolom `skor.alasan_prioritas`.
+- Parameter baru: `sensor.batas_data_hilang_persen`, `sensor.gap_maks_jendela`, titik jenuh SEN-01 per kategori, `skor.aturan_bukti_fisik`.
+- `make sensor` (kedua dataset paralel per perangkat, lalu `make rules`).
+- Tes integritas pesan, edge AI, SEN-01, uji integrasi kasus sah shift darurat, dan batas akses tiga sisi; total 172 tes.
+
+### Changed
+- `temuan` mendapat kolom `kategori`; `skor` mendapat kolom `alasan_prioritas` (migrasi otomatis).
+- `make generate` juga menghapus data sensor dataset itu; urutan kerja: `make generate` → `make sensor`.
+- Dockerfile memasang dependensi sebelum menyalin kode (build ulang cepat).
+- Dependensi baru: `cryptography`, `scikit-learn==1.9.1`, `numpy`.
+
 ## [0.3.0] - 2026-10-03
 
 Fase 2: mesin aturan (Langkah 1: Hitung).
