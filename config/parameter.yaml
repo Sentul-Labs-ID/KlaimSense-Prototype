@@ -82,3 +82,32 @@ bobot_aturan:
   WJR-02: 10   # alat bantu dengar sebelum masa penggantian
   BAND-01: 5   # menyimpang dari rumah sakit sejenis
   SEN-01: 20   # jam-mesin sensor tidak cocok dengan sesi ditagih
+
+# -----------------------------------------------------------------------------
+# Skor prioritas (fase 2)
+# -----------------------------------------------------------------------------
+# skor = jumlah (bobot_aturan x keparahan_aturan), keparahan 0-1, sehingga skor 0-100.
+# Keparahan aturan berbasis hitungan (KAP, ULG, WJR, dan SEN-01 mulai fase 3)
+#   = min(1, jumlah temuan dalam satu periode (bulan) / titik_jenuh).
+# Keparahan BAND-01 = min(1, (z - ambang_robust_z) / ambang_robust_z) jika z > ambang.
+skor:
+  # Arti   : jumlah temuan per rumah sakit per bulan yang dianggap keparahan penuh (1,0).
+  # Satuan : temuan per bulan.
+  # Catatan: ILUSTRATIF, wajib divalidasi bersama BPJS dan organisasi profesi.
+  titik_jenuh:
+    KAP-01: 3
+    KAP-02: 3
+    ULG-01: 3
+    ULG-02: 3
+    WJR-01: 3
+    WJR-02: 2
+    SEN-01: 3   # dipakai mulai fase 3
+
+  # Arti   : batas bawah skor untuk tiap tingkat prioritas pemeriksaan
+  #          (skor >= tinggi -> tinggi; skor >= sedang -> sedang; selain itu rendah).
+  # Satuan : poin skor (0-100). Skor maksimum sementara 80 karena SEN-01 baru aktif di fase 3.
+  # Catatan: ditetapkan dari sebaran skor dataset utama saja (lihat DEVLOG fase 2).
+  #          ILUSTRATIF, wajib divalidasi bersama BPJS dan organisasi profesi.
+  prioritas:
+    tinggi: 20
+    sedang: 10

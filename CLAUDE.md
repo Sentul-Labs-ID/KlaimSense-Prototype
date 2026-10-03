@@ -49,6 +49,7 @@ Sesuai `ROADMAP.md` bagian "Konvensi dokumentasi":
 | `make reset-db` | Hapus dan buat ulang database kosong |
 | `make test` | Jalankan pytest backend di container |
 | `make generate` | Bangkitkan dataset tiruan `utama` (seed 42) dan `hidden` (seed 2026) ke database |
-| `make rules` / `sensor` / `eval` / `demo` | Diisi di fase 2 / 3 / 4 / 7 |
+| `make rules` | Jalankan mesin aturan (utama dan hidden), tulis `temuan` dan `skor`, cetak 10 RS teratas |
+| `make sensor` / `eval` / `demo` | Diisi di fase 3 / 4 / 7 |
 
 Tes cepat tanpa Docker: `cd backend && python -m venv .venv && .venv/Scripts/pip install -e ".[dev]" && .venv/Scripts/python -m pytest` (Windows; di Linux/macOS pakai `.venv/bin/`).

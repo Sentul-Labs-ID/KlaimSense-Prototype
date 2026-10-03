@@ -8,6 +8,7 @@ Tabel dikelompokkan menurut siapa yang boleh membacanya:
 - `kenyataan`            : sesi yang benar-benar terjadi. Hanya untuk simulator
                            sensor (fase 3) dan evaluasi (fase 4). DILARANG dibaca
                            mesin aturan.
+- `hasil`                : temuan dan skor hasil mesin aturan. Boleh dibaca semua modul.
 - `evaluasi`             : ground truth, profil rumah sakit tiruan, dan kasus sah di
                            area batas. Hanya untuk evaluasi (fase 4); tidak boleh
                            dibaca mesin aturan atau diekspos API dashboard.
@@ -17,6 +18,7 @@ Semua tabel punya kolom `dataset_id` ("utama" atau "hidden"). Seluruh isinya dat
 
 from sentinel.db import Base
 from sentinel.models.evaluasi import GroundTruth, KasusSah, ProfilRS
+from sentinel.models.hasil import Skor, Temuan
 from sentinel.models.kenyataan import SesiAktual
 from sentinel.models.master import HargaAcuan, Kapasitas, Pasien, RumahSakit
 from sentinel.models.transaksi import RiwayatAlatBantuDengar, Tagihan
@@ -35,5 +37,7 @@ __all__ = [
     "RiwayatAlatBantuDengar",
     "RumahSakit",
     "SesiAktual",
+    "Skor",
     "Tagihan",
+    "Temuan",
 ]

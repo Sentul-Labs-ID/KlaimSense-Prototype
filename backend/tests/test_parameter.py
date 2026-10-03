@@ -88,3 +88,27 @@ def test_bobot_tidak_boleh_negatif(tmp_path, data_valid):
 
     with pytest.raises(ValidationError, match="negatif"):
         muat_parameter(_tulis(tmp_path, data_valid))
+
+
+def test_bagian_skor_berisi_titik_jenuh_dan_prioritas():
+    p = muat_parameter(PARAMETER_REPO)
+    assert set(p.skor.titik_jenuh) == {"KAP-01", "KAP-02", "ULG-01", "ULG-02", "WJR-01", "WJR-02", "SEN-01"}
+    assert 0 < p.skor.prioritas.sedang < p.skor.prioritas.tinggi <= 100
+
+
+def test_titik_jenuh_harus_lengkap_dan_positif(tmp_path, data_valid):
+    del data_valid["skor"]["titik_jenuh"]["KAP-01"]
+    with pytest.raises(ValidationError, match="titik_jenuh"):
+        muat_parameter(_tulis(tmp_path, data_valid))
+
+
+def test_titik_jenuh_tidak_boleh_nol(tmp_path, data_valid):
+    data_valid["skor"]["titik_jenuh"]["KAP-01"] = 0
+    with pytest.raises(ValidationError, match="positif"):
+        muat_parameter(_tulis(tmp_path, data_valid))
+
+
+def test_ambang_prioritas_sedang_harus_di_bawah_tinggi(tmp_path, data_valid):
+    data_valid["skor"]["prioritas"] = {"tinggi": 10, "sedang": 10}
+    with pytest.raises(ValidationError, match="sedang"):
+        muat_parameter(_tulis(tmp_path, data_valid))

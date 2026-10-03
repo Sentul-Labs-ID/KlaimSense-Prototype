@@ -4,15 +4,18 @@ Semua batas aturan dibaca dari file tersebut, bukan di-hardcode (prinsip 4).
 Nilai default di file itu ilustratif sampai divalidasi.
 """
 
+import hashlib
 from pathlib import Path
 
 import yaml
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from sentinel.config import get_settings
 
 KODE_ATURAN = ("KAP-01", "KAP-02", "ULG-01", "ULG-02", "WJR-01", "WJR-02", "BAND-01", "SEN-01")
 TOTAL_BOBOT = 100
+# Aturan yang keparahannya dihitung dari jumlah temuan per periode (BAND-01 memakai z-score).
+ATURAN_HITUNGAN = ("KAP-01", "KAP-02", "ULG-01", "ULG-02", "WJR-01", "WJR-02", "SEN-01")
 
 
 class _Ketat(BaseModel):
@@ -39,6 +42,31 @@ class Sensor(_Ketat):
     toleransi_selisih_jam_mesin_persen: float = Field(ge=0, le=100)
 
 
+class Prioritas(_Ketat):
+    tinggi: float = Field(gt=0, le=100)
+    sedang: float = Field(gt=0, le=100)
+
+    @model_validator(mode="after")
+    def _urut(self) -> "Prioritas":
+        if self.sedang >= self.tinggi:
+            raise ValueError("ambang prioritas sedang harus lebih kecil dari tinggi")
+        return self
+
+
+class Skor(_Ketat):
+    titik_jenuh: dict[str, float]
+    prioritas: Prioritas
+
+    @field_validator("titik_jenuh")
+    @classmethod
+    def _cek_titik_jenuh(cls, nilai: dict[str, float]) -> dict[str, float]:
+        if set(nilai) != set(ATURAN_HITUNGAN):
+            raise ValueError(f"titik_jenuh harus berisi tepat: {list(ATURAN_HITUNGAN)}")
+        if any(v <= 0 for v in nilai.values()):
+            raise ValueError("titik_jenuh harus positif")
+        return nilai
+
+
 class Parameter(_Ketat):
     versi_skema: int
     kapasitas: Kapasitas
@@ -46,6 +74,7 @@ class Parameter(_Ketat):
     perbandingan: Perbandingan
     sensor: Sensor
     bobot_aturan: dict[str, float]
+    skor: Skor
 
     @field_validator("bobot_aturan")
     @classmethod
@@ -65,9 +94,17 @@ class Parameter(_Ketat):
         return bobot
 
 
+def _path(path: Path | str | None) -> Path:
+    return Path(path) if path is not None else get_settings().parameter_path
+
+
 def muat_parameter(path: Path | str | None = None) -> Parameter:
     """Baca dan validasi file parameter. Default: PARAMETER_PATH dari environment."""
-    path = Path(path) if path is not None else get_settings().parameter_path
-    with path.open(encoding="utf-8") as f:
+    with _path(path).open(encoding="utf-8") as f:
         data = yaml.safe_load(f)
     return Parameter.model_validate(data)
+
+
+def hash_parameter(path: Path | str | None = None) -> str:
+    """SHA-256 isi file parameter (byte apa adanya), untuk melacak skor ke parameternya."""
+    return hashlib.sha256(_path(path).read_bytes()).hexdigest()

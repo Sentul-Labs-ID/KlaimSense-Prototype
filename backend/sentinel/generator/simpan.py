@@ -6,6 +6,8 @@ from sentinel.generator.bangkit import URUTAN_TABEL, DataTiruan
 from sentinel.models import Base
 
 UKURAN_BATCH = 5_000
+# Tabel turunan (hasil mesin aturan) yang menjadi basi bila data dibangkitkan ulang.
+TABEL_TURUNAN = ("skor", "temuan")
 
 
 def buat_tabel(engine: Engine) -> None:
@@ -13,12 +15,12 @@ def buat_tabel(engine: Engine) -> None:
 
 
 def simpan(engine: Engine, data: DataTiruan) -> None:
-    """Hapus data lama dataset yang sama, lalu tulis ulang dalam satu transaksi.
-    Dataset lain (misalnya hidden saat menulis utama) tidak disentuh."""
+    """Hapus data lama dataset yang sama (termasuk temuan dan skor turunannya), lalu
+    tulis ulang dalam satu transaksi. Dataset lain tidak disentuh."""
     buat_tabel(engine)
     tabel = Base.metadata.tables
     with engine.begin() as conn:
-        for nama in reversed(URUTAN_TABEL):
+        for nama in TABEL_TURUNAN + tuple(reversed(URUTAN_TABEL)):
             t = tabel[nama]
             conn.execute(delete(t).where(t.c.dataset_id == data.dataset_id))
         for nama in URUTAN_TABEL:

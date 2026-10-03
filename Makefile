@@ -30,8 +30,11 @@ generate:
 	$(COMPOSE) run --rm backend python -m sentinel.generator --dataset utama --seed 42 --days 90 --rs 30
 	$(COMPOSE) run --rm backend python -m sentinel.generator --hidden
 
+## Jalankan mesin aturan untuk dataset utama dan hidden; cetak 10 RS dengan skor tertinggi.
 rules:
-	@echo Belum tersedia: diimplementasikan di fase 2
+	$(COMPOSE) build backend
+	$(COMPOSE) run --rm backend python -m sentinel.rules --dataset utama
+	$(COMPOSE) run --rm backend python -m sentinel.rules --dataset hidden
 
 sensor:
 	@echo Belum tersedia: diimplementasikan di fase 3
