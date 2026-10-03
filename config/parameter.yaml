@@ -65,6 +65,22 @@ sensor:
   # Catatan: ILUSTRATIF, wajib divalidasi bersama BPJS dan organisasi profesi.
   toleransi_selisih_jam_mesin_persen: 10
 
+  # Arti   : bila data sensor sebuah RS pada satu hari hilang melebihi batas ini, SEN-01
+  #          TIDAK menghitung selisih jam (tidak menuduh dari data bolong) dan membuat
+  #          temuan integritas sebagai gantinya. Dihitung dari seluruh menit-perangkat
+  #          RS itu pada hari tersebut (jumlah perangkat aktif x 1440 menit).
+  # Satuan : persen.
+  # Aturan : SEN-01.
+  # Catatan: ILUSTRATIF, wajib divalidasi bersama BPJS dan organisasi profesi.
+  batas_data_hilang_persen: 5
+
+  # Arti   : heartbeat perangkat yang hilang lebih dari N jendela berturut-turut dianggap
+  #          sensor dicabut/dimatikan (TAMPER_GAP).
+  # Satuan : jendela (default panjang jendela 10 menit, jadi 3 jendela = 30 menit).
+  # Aturan : SEN-01 (integritas).
+  # Catatan: ILUSTRATIF, wajib divalidasi bersama BPJS dan organisasi profesi.
+  gap_maks_jendela: 3
+
 # -----------------------------------------------------------------------------
 # Bobot skor per aturan
 # -----------------------------------------------------------------------------
@@ -87,8 +103,10 @@ bobot_aturan:
 # Skor prioritas (fase 2)
 # -----------------------------------------------------------------------------
 # skor = jumlah (bobot_aturan x keparahan_aturan), keparahan 0-1, sehingga skor 0-100.
-# Keparahan aturan berbasis hitungan (KAP, ULG, WJR, dan SEN-01 mulai fase 3)
+# Keparahan aturan berbasis hitungan (KAP, ULG, WJR)
 #   = min(1, jumlah temuan dalam satu periode (bulan) / titik_jenuh).
+# Keparahan SEN-01 = maksimum dari keparahan selisih dan keparahan integritas, masing-masing
+#   min(1, jumlah temuan kategori itu dalam sebulan / titik_jenuh kategorinya).
 # Keparahan BAND-01 = min(1, (z - ambang_robust_z) / ambang_robust_z) jika z > ambang.
 skor:
   # Arti   : jumlah temuan per rumah sakit per bulan yang dianggap keparahan penuh (1,0).
@@ -101,13 +119,25 @@ skor:
     ULG-02: 3
     WJR-01: 3
     WJR-02: 2
-    SEN-01: 3   # dipakai mulai fase 3
+    SEN-01-selisih: 3      # temuan selisih jam-mesin terapi vs sesi ditagih
+    SEN-01-integritas: 2   # temuan integritas: TAMPER_SIG/CHAIN/GAP dan hari data bolong
 
   # Arti   : batas bawah skor untuk tiap tingkat prioritas pemeriksaan
   #          (skor >= tinggi -> tinggi; skor >= sedang -> sedang; selain itu rendah).
-  # Satuan : poin skor (0-100). Skor maksimum sementara 80 karena SEN-01 baru aktif di fase 3.
+  # Satuan : poin skor (0-100). Sejak fase 3 SEN-01 aktif, skor maksimum 100.
   # Catatan: ditetapkan dari sebaran skor dataset utama saja (lihat DEVLOG fase 2).
   #          ILUSTRATIF, wajib divalidasi bersama BPJS dan organisasi profesi.
   prioritas:
     tinggi: 20
     sedang: 10
+
+  # Arti   : LANTAI PRIORITAS. Bila salah satu aturan bukti fisik di bawah mencapai
+  #          keparahan 1 (titik jenuh) dalam satu periode, prioritas RS itu minimal "tinggi"
+  #          berapa pun skornya. Skor tidak berubah; hanya label prioritas.
+  # Alasan : kapasitas fisik yang terlampaui berulang kali (tenaga, mesin) dan jam-mesin
+  #          yang tidak cukup untuk sesi yang ditagih adalah bukti terkuat di sistem;
+  #          bukti itu tidak boleh berakhir di prioritas sedang hanya karena bobot satu
+  #          aturan dibatasi (mis. 15). Keputusan prinsip, bukan hasil melihat label.
+  # Nilai  : kunci titik_jenuh (SEN-01 hanya kategori selisih, bukan integritas).
+  # Catatan: daftar boleh diubah; wajib divalidasi bersama BPJS.
+  aturan_bukti_fisik: [KAP-01, KAP-02, SEN-01-selisih]

@@ -1,0 +1,48 @@
+{
+  "seed_latih": 7001,
+  "panjang_jendela_menit": 10,
+  "jumlah_mesin_hari": {
+    "latih": 280,
+    "uji": 120
+  },
+  "jumlah_jendela": {
+    "latih": 40320,
+    "uji": 17280
+  },
+  "fitur": [
+    "rata_rata",
+    "simpangan_baku",
+    "puncak",
+    "fluktuasi"
+  ],
+  "kedalaman_pohon": 6,
+  "akurasi_uji": 0.9775,
+  "label": [
+    "mati",
+    "standby",
+    "terapi"
+  ],
+  "confusion_matrix_uji": [
+    [
+      9347,
+      1,
+      0
+    ],
+    [
+      0,
+      2634,
+      242
+    ],
+    [
+      0,
+      145,
+      4911
+    ]
+  ],
+  "sha256": "b5f9f57d0e586f714cf9e1f800992ae18baa4d7b6999980ebd22393a254f9baf",
+  "lingkungan": {
+    "python": "3.13.7",
+    "numpy": "2.5.3",
+    "scikit-learn": "1.9.1"
+  }
+}

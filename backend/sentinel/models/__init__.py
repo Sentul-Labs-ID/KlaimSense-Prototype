@@ -9,6 +9,9 @@ Tabel dikelompokkan menurut siapa yang boleh membacanya:
                            sensor (fase 3) dan evaluasi (fase 4). DILARANG dibaca
                            mesin aturan.
 - `hasil`                : temuan dan skor hasil mesin aturan. Boleh dibaca semua modul.
+- `sensor`               : data yang diterima SERVER dari perangkat (registri kunci publik,
+                           pesan valid, anomali, ringkasan harian). Boleh dibaca server,
+                           mesin aturan, dan dashboard.
 - `evaluasi`             : ground truth, profil rumah sakit tiruan, dan kasus sah di
                            area batas. Hanya untuk evaluasi (fase 4); tidak boleh
                            dibaca mesin aturan atau diekspos API dashboard.
@@ -21,6 +24,7 @@ from sentinel.models.evaluasi import GroundTruth, KasusSah, ProfilRS
 from sentinel.models.hasil import Skor, Temuan
 from sentinel.models.kenyataan import SesiAktual
 from sentinel.models.master import HargaAcuan, Kapasitas, Pasien, RumahSakit
+from sentinel.models.sensor import Perangkat, SensorAnomali, StatusMesinHarian, StatusSensor
 from sentinel.models.transaksi import RiwayatAlatBantuDengar, Tagihan
 
 DATASET = ("utama", "hidden")
@@ -33,11 +37,15 @@ __all__ = [
     "KasusSah",
     "Kapasitas",
     "Pasien",
+    "Perangkat",
     "ProfilRS",
     "RiwayatAlatBantuDengar",
     "RumahSakit",
+    "SensorAnomali",
     "SesiAktual",
     "Skor",
+    "StatusMesinHarian",
+    "StatusSensor",
     "Tagihan",
     "Temuan",
 ]

@@ -14,8 +14,11 @@ from sentinel.config import get_settings
 
 KODE_ATURAN = ("KAP-01", "KAP-02", "ULG-01", "ULG-02", "WJR-01", "WJR-02", "BAND-01", "SEN-01")
 TOTAL_BOBOT = 100
-# Aturan yang keparahannya dihitung dari jumlah temuan per periode (BAND-01 memakai z-score).
-ATURAN_HITUNGAN = ("KAP-01", "KAP-02", "ULG-01", "ULG-02", "WJR-01", "WJR-02", "SEN-01")
+# Kunci titik jenuh: aturan yang keparahannya dihitung dari jumlah temuan per periode.
+# SEN-01 punya dua kategori (selisih dan integritas); BAND-01 memakai z-score.
+ATURAN_HITUNGAN = (
+    "KAP-01", "KAP-02", "ULG-01", "ULG-02", "WJR-01", "WJR-02", "SEN-01-selisih", "SEN-01-integritas",
+)
 
 
 class _Ketat(BaseModel):
@@ -40,6 +43,8 @@ class Perbandingan(_Ketat):
 
 class Sensor(_Ketat):
     toleransi_selisih_jam_mesin_persen: float = Field(ge=0, le=100)
+    batas_data_hilang_persen: float = Field(ge=0, le=100)
+    gap_maks_jendela: int = Field(ge=1)
 
 
 class Prioritas(_Ketat):
@@ -56,6 +61,7 @@ class Prioritas(_Ketat):
 class Skor(_Ketat):
     titik_jenuh: dict[str, float]
     prioritas: Prioritas
+    aturan_bukti_fisik: tuple[str, ...]
 
     @field_validator("titik_jenuh")
     @classmethod
@@ -64,6 +70,14 @@ class Skor(_Ketat):
             raise ValueError(f"titik_jenuh harus berisi tepat: {list(ATURAN_HITUNGAN)}")
         if any(v <= 0 for v in nilai.values()):
             raise ValueError("titik_jenuh harus positif")
+        return nilai
+
+    @field_validator("aturan_bukti_fisik")
+    @classmethod
+    def _cek_bukti_fisik(cls, nilai: tuple[str, ...]) -> tuple[str, ...]:
+        asing = [x for x in nilai if x not in ATURAN_HITUNGAN]
+        if asing:
+            raise ValueError(f"aturan_bukti_fisik harus berupa kunci titik_jenuh, bukan {asing}")
         return nilai
 
 

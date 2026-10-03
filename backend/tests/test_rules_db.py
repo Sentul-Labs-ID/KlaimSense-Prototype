@@ -34,7 +34,7 @@ def test_mesin_aturan_tidak_membutuhkan_tabel_terlarang(engine, capsys):
     assert jumlah(engine, Temuan) > 0
     assert jumlah(engine, Skor) == 20 * 2  # 20 RS x 2 bulan (Juli-Agustus)
     keluaran = capsys.readouterr().out
-    assert "10 RS dengan skor tertinggi" in keluaran
+    assert "10 RS teratas" in keluaran
     for kata in TABEL_TERLARANG:
         assert kata not in keluaran
 

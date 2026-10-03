@@ -36,8 +36,13 @@ rules:
 	$(COMPOSE) run --rm backend python -m sentinel.rules --dataset utama
 	$(COMPOSE) run --rm backend python -m sentinel.rules --dataset hidden
 
+## Simulasi sensor (simulator -> edge -> ingest -> ringkasan harian) untuk kedua dataset,
+## lalu jalankan ulang mesin aturan agar SEN-01 ikut dihitung.
 sensor:
-	@echo Belum tersedia: diimplementasikan di fase 3
+	$(COMPOSE) build backend
+	$(COMPOSE) run --rm backend python -m sentinel.sensor --dataset utama
+	$(COMPOSE) run --rm backend python -m sentinel.sensor --dataset hidden
+	$(MAKE) rules
 
 eval:
 	@echo Belum tersedia: diimplementasikan di fase 4

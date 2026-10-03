@@ -32,6 +32,8 @@ class Temuan(Base):
     selisih: Mapped[float] = mapped_column(Float)
     penjelasan: Mapped[str] = mapped_column(Text)
     versi_aturan: Mapped[str] = mapped_column(String(16))
+    # Khusus SEN-01: "selisih" atau "integritas"; kosong untuk aturan lain.
+    kategori: Mapped[str | None] = mapped_column(String(16))
 
 
 class Skor(Base):
@@ -42,6 +44,8 @@ class Skor(Base):
     periode: Mapped[str] = mapped_column(String(7), primary_key=True)
     skor: Mapped[float] = mapped_column(Float)
     prioritas: Mapped[str] = mapped_column(String(8))
+    # Mengapa label prioritas itu: "ambang skor ≥ 20" atau "lantai: KAP-02 jenuh" (fase 3).
+    alasan_prioritas: Mapped[str | None] = mapped_column(String(160))
     rincian_per_aturan: Mapped[dict] = mapped_column(JSON)
     versi_aturan: Mapped[str] = mapped_column(String(16))
     hash_parameter: Mapped[str] = mapped_column(String(64))

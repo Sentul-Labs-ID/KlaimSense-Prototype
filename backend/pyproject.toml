@@ -15,6 +15,12 @@ dependencies = [
     "pydantic>=2.7",
     "pydantic-settings>=2.3",
     "pyyaml>=6.0",
+    # Fase 3: tanda tangan Ed25519 perangkat sensor.
+    "cryptography>=43",
+    # Fase 3: model edge (pohon keputusan). Dipatok tepat agar file model hasil pickle
+    # dan hash SHA-256-nya sama di lokal dan container.
+    "scikit-learn==1.9.1",
+    "numpy>=2.0,<3",
 ]
 
 [project.optional-dependencies]

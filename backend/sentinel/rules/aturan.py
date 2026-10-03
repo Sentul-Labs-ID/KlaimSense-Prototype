@@ -26,6 +26,7 @@ def temuan(
     batas: float,
     selisih: float,
     penjelasan: str,
+    kategori: str | None = None,
 ) -> dict:
     return {
         "aturan_id": aturan_id,
@@ -38,6 +39,7 @@ def temuan(
         "batas": float(batas),
         "selisih": float(selisih),
         "penjelasan": penjelasan,
+        "kategori": kategori,
     }
 
 

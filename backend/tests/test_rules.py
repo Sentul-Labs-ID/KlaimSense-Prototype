@@ -347,8 +347,8 @@ def test_band_01_dilewati_bila_tetap_tidak_memadai():
 # ---------------------------------------------------------------------- skor
 
 
-def temuan_palsu(aturan: str, n: int, rs_id="RS-001", periode="2026-08") -> list[dict]:
-    return [{"aturan_id": aturan, "rs_id": rs_id, "periode": periode} for _ in range(n)]
+def temuan_palsu(aturan: str, n: int, rs_id="RS-001", periode="2026-08", kategori=None) -> list[dict]:
+    return [{"aturan_id": aturan, "rs_id": rs_id, "periode": periode, "kategori": kategori} for _ in range(n)]
 
 
 def m_satu_bulan() -> Masukan:
@@ -357,7 +357,7 @@ def m_satu_bulan() -> Masukan:
     return masukan(t)
 
 
-def test_skor_rumus_keparahan_dan_sen_01_nol():
+def test_skor_rumus_keparahan_dan_sen_01_tanpa_temuan_nol():
     temuan = temuan_palsu("KAP-01", 1) + temuan_palsu("WJR-02", 5)
     band = [Penilaian("RS-001", "hemodialisa", "2026-08", 0.9, 4.5, "kelas", 4, 0.6, None)]
     (s,) = hitung_skor(m_satu_bulan(), PARAM, temuan, band)
@@ -369,11 +369,13 @@ def test_skor_rumus_keparahan_dan_sen_01_nol():
     assert s["skor"] == pytest.approx(5 + 10 + 2.5)
 
 
-def test_skor_maksimum_sementara_80_dan_selalu_0_sampai_100():
+def test_skor_maksimum_100_dan_selalu_0_sampai_100():
     temuan = sum((temuan_palsu(a, 50) for a in ("KAP-01", "KAP-02", "ULG-01", "ULG-02", "WJR-01", "WJR-02")), [])
     band = [Penilaian("RS-001", "fisioterapi", "2026-08", 1.0, 99.0, "kelas", 4, 0.5, None)]
     (s,) = hitung_skor(m_satu_bulan(), PARAM, temuan, band)
-    assert s["skor"] == 80 and s["prioritas"] == "tinggi"
+    assert s["skor"] == 80  # tanpa temuan sensor
+    (s,) = hitung_skor(m_satu_bulan(), PARAM, temuan + temuan_palsu("SEN-01", 9, kategori="selisih"), band)
+    assert s["skor"] == 100 and s["prioritas"] == "tinggi"
     (kosong,) = hitung_skor(m_satu_bulan(), PARAM, [], [])
     assert kosong["skor"] == 0 and kosong["prioritas"] == "rendah"
 
@@ -406,7 +408,8 @@ def hasil_utama(utama):
 def test_dataset_penuh_cepat_dan_skor_dalam_rentang(hasil_utama):
     m, h, durasi = hasil_utama
     assert durasi < 30
-    assert all(0 <= s["skor"] <= 80 for s in h.skor)
+    assert all(0 <= s["skor"] <= 100 for s in h.skor)
+    # Data generator tanpa data sensor: SEN-01 tidak punya temuan dan berkontribusi 0.
     assert all(s["rincian_per_aturan"]["SEN-01"]["kontribusi"] == 0 for s in h.skor)
     assert len(h.skor) == len(m.rumah_sakit) * 3  # 3 bulan: Juli-September
     assert {t["aturan_id"] for t in h.temuan} <= {"KAP-01", "KAP-02", "ULG-01", "ULG-02", "WJR-01", "WJR-02", "BAND-01"}
@@ -426,3 +429,35 @@ def test_hash_parameter_berubah_bila_parameter_berubah(tmp_path):
     salinan.write_text(salinan.read_text(encoding="utf-8").replace("tinggi: 20", "tinggi: 25"), encoding="utf-8")
     assert hash_parameter(salinan) != hash_parameter(PARAM_PATH)
     assert muat_parameter(salinan).skor.prioritas.tinggi == 25
+
+
+# ------------------------------------------------------------ lantai prioritas
+
+
+def test_lantai_aturan_bukti_fisik_jenuh_memaksa_tinggi():
+    (s,) = hitung_skor(m_satu_bulan(), PARAM, temuan_palsu("KAP-02", 3), [])
+    assert s["skor"] == 15  # skor tidak berubah
+    assert s["prioritas"] == "tinggi" and s["alasan_prioritas"] == "lantai: KAP-02 jenuh"
+
+
+def test_lantai_sen_01_selisih_jenuh_tercatat_sebagai_alasan():
+    (s,) = hitung_skor(m_satu_bulan(), PARAM, temuan_palsu("SEN-01", 3, kategori="selisih"), [])
+    assert s["prioritas"] == "tinggi" and "lantai: SEN-01-selisih jenuh" in s["alasan_prioritas"]
+
+
+def test_lantai_tidak_aktif_bila_keparahan_di_bawah_1():
+    (s,) = hitung_skor(m_satu_bulan(), PARAM, temuan_palsu("KAP-02", 2), [])
+    assert s["skor"] == 10 and s["prioritas"] == "sedang" and s["alasan_prioritas"] == "ambang skor ≥ 10"
+
+
+@pytest.mark.parametrize("aturan, kategori", [("ULG-01", None), ("WJR-01", None), ("SEN-01", "integritas")])
+def test_lantai_tidak_dipicu_aturan_non_fisik_yang_jenuh(aturan, kategori):
+    (s,) = hitung_skor(m_satu_bulan(), PARAM, temuan_palsu(aturan, 9, kategori=kategori), [])
+    assert "lantai" not in s["alasan_prioritas"]
+    assert s["prioritas"] == prioritas(s["skor"], PARAM)
+
+
+def test_daftar_bukti_fisik_bisa_diubah_di_parameter():
+    tanpa_kap02 = PARAM.model_copy(update={"skor": PARAM.skor.model_copy(update={"aturan_bukti_fisik": ("KAP-01",)})})
+    (s,) = hitung_skor(m_satu_bulan(), tanpa_kap02, temuan_palsu("KAP-02", 3), [])
+    assert s["prioritas"] == "sedang"

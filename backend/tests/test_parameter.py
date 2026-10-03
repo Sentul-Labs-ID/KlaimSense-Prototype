@@ -92,7 +92,10 @@ def test_bobot_tidak_boleh_negatif(tmp_path, data_valid):
 
 def test_bagian_skor_berisi_titik_jenuh_dan_prioritas():
     p = muat_parameter(PARAMETER_REPO)
-    assert set(p.skor.titik_jenuh) == {"KAP-01", "KAP-02", "ULG-01", "ULG-02", "WJR-01", "WJR-02", "SEN-01"}
+    assert set(p.skor.titik_jenuh) == {
+        "KAP-01", "KAP-02", "ULG-01", "ULG-02", "WJR-01", "WJR-02", "SEN-01-selisih", "SEN-01-integritas",
+    }
+    assert p.sensor.batas_data_hilang_persen == 5 and p.sensor.gap_maks_jendela == 3
     assert 0 < p.skor.prioritas.sedang < p.skor.prioritas.tinggi <= 100
 
 
@@ -111,4 +114,11 @@ def test_titik_jenuh_tidak_boleh_nol(tmp_path, data_valid):
 def test_ambang_prioritas_sedang_harus_di_bawah_tinggi(tmp_path, data_valid):
     data_valid["skor"]["prioritas"] = {"tinggi": 10, "sedang": 10}
     with pytest.raises(ValidationError, match="sedang"):
+        muat_parameter(_tulis(tmp_path, data_valid))
+
+
+def test_aturan_bukti_fisik_harus_kunci_titik_jenuh(tmp_path, data_valid):
+    assert muat_parameter(PARAMETER_REPO).skor.aturan_bukti_fisik == ("KAP-01", "KAP-02", "SEN-01-selisih")
+    data_valid["skor"]["aturan_bukti_fisik"] = ["KAP-01", "SEN-01"]
+    with pytest.raises(ValidationError, match="aturan_bukti_fisik"):
         muat_parameter(_tulis(tmp_path, data_valid))

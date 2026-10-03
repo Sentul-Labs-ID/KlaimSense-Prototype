@@ -25,7 +25,11 @@ Aturan ini wajib dipatuhi di **semua fase**. Jika ada konflik dengan instruksi l
 - **Nama variabel dan kode:** boleh Indonesia atau Inggris, tetapi **konsisten per modul**. Jangan mencampur dua bahasa untuk konsep yang sama di satu modul.
 - **Setiap fitur wajib punya tes pytest** di `backend/tests/`. `make test` harus lulus sebelum commit.
 - **Dependensi besar** (library baru di luar yang sudah ada di `backend/pyproject.toml` / `frontend/package.json`) tidak boleh ditambahkan tanpa menyebutkan alasannya di `docs/DEVLOG.md`.
-- **Batas akses tabel** (lihat `backend/sentinel/models/`): `sesi_aktual` (kenyataan fisik) hanya boleh dibaca simulator sensor dan evaluasi; `ground_truth`, `profil_rs`, dan `kasus_sah` hanya boleh dibaca evaluasi dan tidak boleh diekspos lewat API dashboard. Mesin aturan hanya membaca tabel `master` dan `transaksi`. Dijaga oleh `tests/test_batas_akses.py`.
+- **Batas akses tabel** (lihat `backend/sentinel/models/` dan `docs/ARSITEKTUR.md`), dijaga oleh `tests/test_batas_akses.py`:
+  - **Dunia fisik**: `sesi_aktual` hanya boleh dibaca `sensor/simulator.py` (dan evaluasi). Generator yang menciptakannya juga boleh menulisnya.
+  - **Perangkat** (`sensor/edge.py`, `sensor/protokol.py`): tidak boleh menyentuh basis data sama sekali; hanya menerima larik arus dan mengirim pesan bertanda tangan.
+  - **Server** (ingest, ringkasan, API, mesin aturan): hanya membaca tabel `master`, `transaksi`, `sensor` (data dari perangkat), dan `hasil`. DILARANG membaca `sesi_aktual`, `ground_truth`, `profil_rs`, `kasus_sah`.
+  - **Tabel evaluasi** (`ground_truth`, `profil_rs`, `kasus_sah`) hanya boleh dibaca evaluasi dan tidak boleh diekspos API dashboard. Yang boleh menulisnya hanya generator dan harness gangguan sensor (`sensor/gangguan.py`).
 - **Konfigurasi rahasia** hanya lewat environment (`.env`, lihat `.env.example`). Jangan commit `.env` atau kunci API.
 
 ## Akhir setiap fase: langkah dokumentasi wajib
@@ -48,8 +52,9 @@ Sesuai `ROADMAP.md` bagian "Konvensi dokumentasi":
 | `make down` | Hentikan layanan |
 | `make reset-db` | Hapus dan buat ulang database kosong |
 | `make test` | Jalankan pytest backend di container |
-| `make generate` | Bangkitkan dataset tiruan `utama` (seed 42) dan `hidden` (seed 2026) ke database |
+| `make generate` | Bangkitkan dataset tiruan `utama` (seed 42) dan `hidden` (seed 2026) ke database; menghapus hasil aturan dan data sensor dataset itu, jadi lanjutkan dengan `make sensor` |
 | `make rules` | Jalankan mesin aturan (utama dan hidden), tulis `temuan` dan `skor`, cetak 10 RS teratas |
-| `make sensor` / `eval` / `demo` | Diisi di fase 3 / 4 / 7 |
+| `make sensor` | Simulasi sensor IoT + edge AI (kedua dataset), lalu `make rules` ulang |
+| `make eval` / `demo` | Diisi di fase 4 / 7 |
 
 Tes cepat tanpa Docker: `cd backend && python -m venv .venv && .venv/Scripts/pip install -e ".[dev]" && .venv/Scripts/python -m pytest` (Windows; di Linux/macOS pakai `.venv/bin/`).

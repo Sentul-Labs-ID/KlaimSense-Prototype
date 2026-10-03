@@ -9,10 +9,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # (config di-mount dari docker-compose), sehingga path relatif sama dengan lokal.
 WORKDIR /repo/backend
 
+# Dependensi dipasang dulu (layer di-cache selama pyproject.toml tidak berubah),
+# baru kemudian kode sumber disalin.
 COPY pyproject.toml ./
-COPY sentinel ./sentinel
-RUN pip install -e ".[dev]"
+RUN mkdir -p sentinel && touch sentinel/__init__.py && pip install -e ".[dev]"
 
+COPY sentinel ./sentinel
 COPY tests ./tests
 
 EXPOSE 8000

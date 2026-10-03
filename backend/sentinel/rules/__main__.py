@@ -28,6 +28,8 @@ def ringkasan(m: Masukan, h: HasilAturan, teratas: int = 10) -> str:
     per_aturan = Counter(t["aturan_id"] for t in h.temuan)
     baris.append(f"Temuan: {len(h.temuan)}")
     baris += [f"  {a:<8}: {per_aturan.get(a, 0)}" for a in KODE_ATURAN if a != "SEN-01"]
+    sen = Counter(t["kategori"] for t in h.temuan if t["aturan_id"] == "SEN-01")
+    baris.append(f"  SEN-01  : {per_aturan.get('SEN-01', 0)} (selisih {sen.get('selisih', 0)}, integritas {sen.get('integritas', 0)})")
     dilewati = [x for x in h.penilaian_banding if x.z is None]
     turun = sum(x.kelompok == "kelas" for x in h.penilaian_banding)
     baris.append(
@@ -40,20 +42,29 @@ def ringkasan(m: Masukan, h: HasilAturan, teratas: int = 10) -> str:
     nilai = sorted(s["skor"] for s in h.skor)
     baris.append(
         f"Skor ({len(h.skor)} RS-periode): min {teks.angka(nilai[0], 2)}, median {teks.angka(median(nilai), 2)}, "
-        f"maks {teks.angka(nilai[-1], 2)} (maksimum sementara 80; SEN-01 aktif di fase 3)"
+        f"maks {teks.angka(nilai[-1], 2)} (maksimum 100)"
     )
     per_prioritas = Counter(s["prioritas"] for s in h.skor)
-    baris.append("  RS-periode per prioritas: " + ", ".join(f"{p} {per_prioritas.get(p, 0)}" for p in PRIORITAS))
+    naik = sum(s["alasan_prioritas"].startswith("lantai") for s in h.skor)
+    baris.append(
+        "  RS-periode per prioritas: " + ", ".join(f"{p} {per_prioritas.get(p, 0)}" for p in PRIORITAS)
+        + f" ({naik} naik ke tinggi karena lantai bukti fisik)"
+    )
 
+    # Periode terpenting per RS: prioritas tertinggi dulu (lantai bisa berlaku di periode
+    # yang skornya bukan tertinggi), lalu skor tertinggi.
+    peringkat = {p: i for i, p in enumerate(reversed(PRIORITAS))}
     terbaik: dict[str, dict] = {}
     for s in h.skor:
-        if s["rs_id"] not in terbaik or s["skor"] > terbaik[s["rs_id"]]["skor"]:
+        kunci = (peringkat[s["prioritas"]], s["skor"])
+        lama = terbaik.get(s["rs_id"])
+        if lama is None or kunci > (peringkat[lama["prioritas"]], lama["skor"]):
             terbaik[s["rs_id"]] = s
     per_rs = Counter(s["prioritas"] for s in terbaik.values())
-    baris.append("  RS per prioritas (periode tertinggi): " + ", ".join(f"{p} {per_rs.get(p, 0)}" for p in PRIORITAS))
+    baris.append("  RS per prioritas (periode terpenting): " + ", ".join(f"{p} {per_rs.get(p, 0)}" for p in PRIORITAS))
 
-    baris.append(f"{teratas} RS dengan skor tertinggi (periode tertinggi masing-masing):")
-    urut = sorted(terbaik.values(), key=lambda s: (-s["skor"], s["rs_id"]))[:teratas]
+    baris.append(f"{teratas} RS teratas (prioritas, lalu skor; periode terpenting masing-masing):")
+    urut = sorted(terbaik.values(), key=lambda s: (-peringkat[s["prioritas"]], -s["skor"], s["rs_id"]))[:teratas]
     for i, s in enumerate(urut, 1):
         r = rs[s["rs_id"]]
         pemicu = []
@@ -62,12 +73,16 @@ def ringkasan(m: Masukan, h: HasilAturan, teratas: int = 10) -> str:
                 continue
             if "jumlah_temuan" in d:
                 pemicu.append(f"{aturan}×{d['jumlah_temuan']}")
+            elif aturan == "SEN-01":
+                pemicu.append(
+                    f"SEN-01 selisih×{d['selisih']['jumlah_temuan']} integritas×{d['integritas']['jumlah_temuan']}"
+                )
             else:
                 z = max((v["z"] for v in d.get("per_layanan", {}).values() if v["z"] is not None), default=0)
                 pemicu.append(f"{aturan} z={teks.angka(z, 1)}")
         baris.append(
             f"  {i:>2}. {s['rs_id']} (kelas {r['kelas']}, {r['provinsi']}) {s['periode']}: "
-            f"skor {teks.angka(s['skor'], 2)} [{s['prioritas']}] — {', '.join(pemicu) or '-'}"
+            f"skor {teks.angka(s['skor'], 2)} [{s['prioritas']}: {s['alasan_prioritas']}] — {', '.join(pemicu) or '-'}"
         )
     return "\n".join(baris)
 

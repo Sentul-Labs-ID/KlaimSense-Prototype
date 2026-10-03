@@ -3,6 +3,7 @@
 from fastapi import FastAPI
 
 from sentinel import __version__
+from sentinel.api.sensor import router as router_sensor
 
 app = FastAPI(
     title="JKN-Sentinel",
@@ -14,3 +15,6 @@ app = FastAPI(
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok", "versi": __version__}
+
+
+app.include_router(router_sensor)
