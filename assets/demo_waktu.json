@@ -1,0 +1,60 @@
+{
+  "durasi_detik": 83.5,
+  "langkah": [
+    {
+      "detik": 0.3,
+      "langkah": "daftar-periksa",
+      "keterangan": "Daftar periksa: semua tagihan tiruan sudah dihitung otomatis dan diurutkan dari prioritas tertinggi."
+    },
+    {
+      "detik": 10.8,
+      "langkah": "rs-rendah",
+      "keterangan": "RS Tiruan 012, Agustus 2026: prioritas rendah, belum ada temuan kapasitas fisioterapi."
+    },
+    {
+      "detik": 17.9,
+      "langkah": "panel-demo",
+      "keterangan": "Panel demo: kita sisipkan tagihan fisioterapi fiktif yang melebihi kapasitas terapis selama 3 hari."
+    },
+    {
+      "detik": 26.8,
+      "langkah": "prioritas-naik",
+      "keterangan": "Skor dihitung ulang: prioritas naik dari rendah menjadi tinggi karena bukti fisik berulang."
+    },
+    {
+      "detik": 35,
+      "langkah": "detail-rs",
+      "keterangan": "Detail rumah sakit: alasan prioritas dan temuan, dengan penjelasan yang bisa dibaca siapa pun."
+    },
+    {
+      "detik": 41.8,
+      "langkah": "grafik",
+      "keterangan": "Grafik harian: pada hari bertanda oranye, sesi yang ditagih melampaui garis kapasitas."
+    },
+    {
+      "detik": 49,
+      "langkah": "sensor",
+      "keterangan": "Sensor di mesin cuci darah RS Tiruan 026: hijau berarti mesin benar-benar menjalankan terapi."
+    },
+    {
+      "detik": 55.1,
+      "langkah": "verifikasi",
+      "keterangan": "Setiap pesan sensor bertanda tangan digital dan berantai: data mesin tidak bisa dipalsukan diam-diam."
+    },
+    {
+      "detik": 62.2,
+      "langkah": "keputusan",
+      "keterangan": "Keputusan tetap di tangan petugas: minta klarifikasi kepada rumah sakit, dengan alasan tertulis."
+    },
+    {
+      "detik": 70.4,
+      "langkah": "audit",
+      "keterangan": "Audit: setiap keputusan dirantai hash. Rantai utuh berarti tidak ada catatan yang diubah diam-diam."
+    },
+    {
+      "detik": 77.5,
+      "langkah": "penutup",
+      "keterangan": "Skor adalah prioritas pemeriksaan, bukan penetapan kecurangan. Keputusan selalu di tangan petugas."
+    }
+  ]
+}
