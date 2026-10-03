@@ -1,0 +1,33 @@
+{
+  "jenis": "verifikasi_reproduksi",
+  "pernyataan": "Verifikasi reproduksi dengan kode dan parameter yang sudah dibekukan, bukan penyetelan. Semua data dibangkitkan ulang di basis data terpisah; reports/evaluasi.json dan log jalan evaluasi hidden tidak diubah.",
+  "waktu": "2026-10-03T13:25:33+00:00",
+  "komit": "87ac7b4",
+  "hash_parameter": "24387a36cefa741379481e4ce37e808a99a2af5fafd9d8a76fd46f62de38aed3",
+  "dibandingkan_dengan": {
+    "berkas": "reports/evaluasi.json",
+    "dibuat_pada": "2026-10-03T06:02:34+00:00",
+    "perbandingan_pertama_hidden": "2026-10-03T06:02:34+00:00"
+  },
+  "identik": true,
+  "per_bagian": {
+    "utama": {
+      "identik": true,
+      "jumlah_perbedaan": 0
+    },
+    "hidden": {
+      "identik": true,
+      "jumlah_perbedaan": 0
+    },
+    "edge_ai": {
+      "identik": true,
+      "jumlah_perbedaan": 0
+    },
+    "proposal": {
+      "identik": true,
+      "jumlah_perbedaan": 0
+    }
+  },
+  "perbedaan": [],
+  "durasi_detik": 169.3
+}

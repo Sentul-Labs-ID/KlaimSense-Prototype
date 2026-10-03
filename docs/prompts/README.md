@@ -10,3 +10,4 @@ Setiap prompt yang dijalankan di Claude Code disimpan **verbatim** di folder ini
 | 3 — Sensor IoT dan Edge AI (Langkah 2: Cek sensor) | v1 | [FASE-03_sensor-iot-edge-ai.md](FASE-03_sensor-iot-edge-ai.md) | 2026-10-03 | Berhasil (pengiriman pertama terpotong; 1 prompt lanjutan) |
 | 4 — Evaluasi akurasi | v1 | [FASE-04_evaluasi.md](FASE-04_evaluasi.md) | 2026-10-03 | Berhasil (1 prompt lanjutan) |
 | 5 — Dashboard petugas (Langkah 4: Putuskan) | v1 | [FASE-05_dashboard.md](FASE-05_dashboard.md) | 2026-10-03 | Berhasil (1 prompt lanjutan) |
+| 7 — Paket demo, tangkapan layar, video, README final | v1 | [FASE-07_paket-demo.md](FASE-07_paket-demo.md) | 2026-10-03 | Berhasil (1 prompt lanjutan); dikerjakan sebelum fase 6 |

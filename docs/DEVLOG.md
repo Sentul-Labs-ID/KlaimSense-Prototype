@@ -13,6 +13,55 @@ Satu entri per sesi kerja, **terbaru di atas**. Format:
 
 ---
 
+## 2026-10-03 — Fase 7: paket demo, tangkapan layar, video, README final
+- Dikerjakan (fase 7 sebelum fase 6, keputusan sadar agar paket proposal siap lebih dulu):
+  - **`make demo`.** Menjalankan build, layanan `DEMO_MODE=true`, data utama dan hidden, sensor, aturan (satu container), lalu `demo-reset`, dan mencetak alamat dashboard serta 4 langkah demo. Tidak menjalankan evaluasi dan tidak menulis ke `reports/`.
+    - Diuji dari clone baru di folder sementara dengan `COMPOSE_PROJECT_NAME=jknuji`: **5 menit 0 detik** (dengan cache image Docker).
+    - `make e2e` dari clone lulus.
+  - **`make verifikasi-reproduksi`** (`sentinel/reproduksi.py`).
+    - Membangkitkan ulang semua data di basis data terpisah `sentinel_verifikasi`, menghitung sensor, aturan, dan evaluasi, lalu membandingkan seluruh isi bagian `utama`, `hidden`, `edge_ai`, dan `proposal` dengan `reports/evaluasi.json`.
+    - Hasil pada commit bersih `87ac7b4`: **IDENTIK**, 169,3 detik.
+    - Hanya menulis `reports/verifikasi_reproduksi.json`. `evaluasi.json` (sha256) dan log jalan hidden (tetap 1 jalan, 2026-10-03T06:02:34Z) tidak berubah.
+  - **`make tangkapan-layar` dan `make rekam-demo`** (Playwright, `frontend/paket/`, demo-reset dulu).
+  - **`docs/NASKAH_DEMO.md`** dan **README final**.
+  - **Tes:** 204 lulus (3 tes baru untuk pembanding reproduksi); `make e2e` lulus.
+- Isi `assets/`:
+
+  | Berkas | Ukuran |
+  |---|---|
+  | `01_daftar-periksa.png` (1920×1080) | 159 KB |
+  | `02_detail-rs.png` (1920×1080: kartu skor, alasan prioritas, temuan) | 179 KB |
+  | `02b_grafik-harian.png` (1920×1080) | 107 KB |
+  | `02_detail-rs-penuh.png` (1920×2493, di README) | 324 KB |
+  | `03_grid-sensor.png` | 103 KB |
+  | `04_demo-sebelum-sesudah.png` (RS Tiruan 012: 3,3 rendah → 18,3 tinggi) | 68 KB |
+  | `05_keputusan.png` | 163 KB |
+  | `06_audit.png` | 47 KB |
+  | `recall_per_skenario.png`, `prioritas_hidden.png` (salinan dari `reports/`) | 97 KB, 47 KB |
+  | `demo.webm` (1920×1080, VP8, **89,6 detik**: alur ±84 detik lalu keterangan penutup ditahan) | 7,0 MB |
+  | `demo_waktu.json` (waktu per langkah) | 2 KB |
+
+- **Pemindaian keamanan** (138 berkas): **tidak ada temuan**.
+  - Tidak ada pola 16 digit (NIK), 13 digit (kartu BPJS), `sk-ant-`, maupun kunci privat PEM.
+  - `.env` diabaikan git; hanya `.env.example`.
+  - Kunci privat sensor hanya diturunkan di memori; tabel `perangkat` hanya menyimpan `public_key`.
+- Keputusan:
+  - **Pilihan (b) untuk tangkapan layar 02** (pengguna): dipecah menjadi 02 dan 02b berukuran 1920×1080, plus versi penuh untuk README. Skrip menggulir ke judul kartu agar hasilnya dapat diulang.
+  - **Video `webm` saja.** mp4 opsional (pengguna).
+  - **Verifikasi reproduksi tidak dicatat sebagai jalan evaluasi hidden.** Verifikasi ini mengulang kode dan parameter yang dibekukan, bukan penyetelan; log hidden tetap bukti satu kali perbandingan.
+  - **Video memakai keterangan overlay bahasa Indonesia** (`#keterangan-demo`), disisipkan oleh skrip Playwright, bukan oleh dashboard.
+- Dependensi baru: tidak ada.
+- Masalah dan solusi:
+  - **`make demo` pertama di clone gagal di langkah terakhir.** Penyebabnya baris `@echo.` (sintaks cmd) di Makefile yang tidak dikenal `sh`. Baris dihapus, lalu `make demo` diulang penuh sampai berhasil.
+  - **Tangkapan layar 02 tidak muat 1920×1080.** Diselesaikan dengan pilihan (b).
+  - **mp4 tidak dibuat.** ffmpeg tidak ada di PATH, dan ffmpeg bawaan Playwright tidak punya encoder H.264.
+  - **Durasi berkas video (89,6 detik) lebih panjang dari pengukur waktu skrip (83,5 detik).** Bingkai diperiksa: waktu langkah selaras, ekornya bingkai penutup yang ditahan.
+  - **Verifikasi reproduksi pertama tercatat `b1934bb-dirty`.** Diulang setelah commit `feat(fase-7)` dengan ROADMAP di-stash sementara; hasil tetap identik.
+- Penyimpangan dari roadmap: lihat `ROADMAP.md` (baris fase 7), termasuk urutan fase 7 sebelum fase 6.
+- Berikutnya:
+  - M1 siap (tag `proposal-m1`).
+  - Fase 6 (RAG dan agen perangkum) bila waktu memungkinkan; README dan proposal menyebutnya tahap berikutnya.
+
 ## 2026-10-03 — Fase 5: dashboard petugas (Langkah 4: Putuskan)
 - Dikerjakan:
   - **API** `GET /meta`, `GET /rs`, `GET /rs/{rs_id}`, `POST /sensor/verifikasi`, `POST /keputusan`, `GET /audit`, `POST /demo/sisipkan`; galat dalam bahasa Indonesia.

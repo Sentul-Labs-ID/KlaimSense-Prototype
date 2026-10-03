@@ -6,6 +6,26 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/), da
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-03
+
+Fase 7: paket demo, tangkapan layar, video, dan README final (dikerjakan sebelum fase 6). Snapshot proposal M1: tag `proposal-m1`.
+
+### Added
+- `make demo`: dari repo bersih ke dashboard siap demo (build, `DEMO_MODE=true`, data utama dan hidden, sensor, aturan, `demo-reset`) tanpa menjalankan evaluasi dan tanpa menulis ke `reports/`.
+- `make verifikasi-reproduksi` (`backend/sentinel/reproduksi.py`):
+  - membangkitkan ulang dan menghitung ulang semua angka di basis data terpisah;
+  - membandingkan dengan `reports/evaluasi.json`;
+  - menulis `reports/verifikasi_reproduksi.json` (hasil: identik, komit `87ac7b4`).
+- `make tangkapan-layar`: 8 tangkapan layar ke `assets/` (01, 02, 02b, 02 penuh, 03–06) dan salinan 2 grafik evaluasi.
+- `make rekam-demo`: video demo `assets/demo.webm` (1920×1080, ±90 detik, keterangan bahasa Indonesia) dan `assets/demo_waktu.json`.
+- Konfigurasi Playwright pengemasan (`frontend/playwright.paket.config.ts`, `frontend/paket/`).
+- `docs/NASKAH_DEMO.md`: naskah narasi selaras dengan video.
+- Tes pembanding reproduksi; total 204 tes backend.
+
+### Changed
+- README final: penjelasan awam, alur empat langkah dengan status teknologi, hasil evaluasi hidden dengan pembilang/penyebut, cara menjalankan, dan tangkapan layar.
+- `make e2e` juga memasang dependensi npm dan Chromium Playwright.
+
 ## [0.6.0] - 2026-10-03
 
 Fase 5: dashboard petugas (Langkah 4: Putuskan).

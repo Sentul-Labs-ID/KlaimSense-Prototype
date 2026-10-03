@@ -24,8 +24,8 @@ Legenda: ⬜ belum mulai · 🟡 sedang berjalan · ✅ selesai · ⏭️ ditund
 | 3 | Sensor IoT + Edge AI simulasi (Langkah 2) | ✅ | Rifandi | 3 Okt 2026 | Ya |
 | 4 | Evaluasi akurasi | ✅ | Rifandi | 3 Okt 2026 | Ya |
 | 5 | Dashboard petugas (Langkah 4: Putuskan) | ✅ | Rifandi | 3 Okt 2026 | Ya |
-| 6 | RAG dan agen perangkum (Langkah 3: Rangkum) | ⬜ | Joesavat | 3 Okt 2026 | Opsional |
-| 7 | Paket demo, screenshot, naskah video | ⬜ | Rifandi | 4 Okt 2026 pagi | Ya |
+| 6 | RAG dan agen perangkum (Langkah 3: Rangkum) | ⬜ dikerjakan setelah fase 7 jika waktu memungkinkan | Joesavat | 3 Okt 2026 | Opsional |
+| 7 | Paket demo, screenshot, naskah video | ✅ | Rifandi | 4 Okt 2026 pagi | Ya |
 
 Validasi parameter klinis dan isi proposal: **Akbar** (lihat bagian Parameter).
 
@@ -33,11 +33,11 @@ Validasi parameter klinis dan isi proposal: **Akbar** (lihat bagian Parameter).
 
 ## Milestone
 
-| Milestone | Tanggal | Isi |
-|---|---|---|
-| **M1 — Submit proposal** | 4 Okt 2026 | Fase 0–5 dan 7 selesai. Fase 6 jika sempat. Screenshot, angka evaluasi, dan video demo masuk ke proposal. |
-| **M2 — Hackathon Event** | Diumumkan panitia (±3 minggu) | Multi-agent penuh, Edge AI dikalibrasi, pengecekan tempat tidur dan beban dokter, semua skenario uji. |
-| **M3 — Demo Day / Grand Final** | Diumumkan panitia | Demo dari tagihan masuk sampai keputusan petugas, plus laporan hasil uji. |
+| Milestone | Tanggal | Isi | Status |
+|---|---|---|---|
+| **M1 — Submit proposal** | 4 Okt 2026 | Fase 0–5 dan 7 selesai. Fase 6 jika sempat. Screenshot, angka evaluasi, dan video demo masuk ke proposal. | ✅ **Siap** (2026-10-03, tag `proposal-m1`): fase 0–5 dan 7 selesai; fase 6 belum |
+| **M2 — Hackathon Event** | Diumumkan panitia (±3 minggu) | Multi-agent penuh, Edge AI dikalibrasi, pengecekan tempat tidur dan beban dokter, semua skenario uji. | ⬜ |
+| **M3 — Demo Day / Grand Final** | Diumumkan panitia | Demo dari tagihan masuk sampai keputusan petugas, plus laporan hasil uji. | ⬜ |
 
 ---
 
@@ -293,6 +293,13 @@ Catat di sini setiap keputusan yang berbeda dari roadmap.
 | 2026-10-03 | 5 | Dataset demo identik dengan utama (bangkit ulang atau salin) | **Dibangkitkan ulang** dengan seed 42 dari profil kembar utama; ID digeser (`RS-901…`, `P-900001…`, baris 90.000.001+), nama samaran sama; kunci acak sensor dipetakan ke mesin utama; skor dan prioritas 90/90 identik (disetujui pengguna) | ID adalah kunci global sehingga tidak bisa disalin apa adanya; menyalin pesan sensor dengan ID baru akan merusak tanda tangannya |
 | 2026-10-03 | 5 | Waktu di dashboard | Ditampilkan dalam WIB (Asia/Jakarta); basis data dan API tetap UTC (permintaan pengguna) | Petugas dan juri membaca waktu lokal |
 | 2026-10-03 | 5 | Infrastruktur dashboard | `DEMO_MODE` default `false` (panel demo: `DEMO_MODE=true make up`); `make demo-reset` dalam satu container; `make test` me-mount `frontend/` baca-saja; `make e2e`; dependensi dev `@playwright/test`; grafik SVG tanpa pustaka baru | Target demo-reset < 2 menit; tes batas akses frontend; uji asap dan tangkapan layar fase 7 |
+| 2026-10-03 | 7 | **Urutan fase 0 → 7, fase 6 sesudahnya** | **Fase 7 dikerjakan sebelum fase 6 (RAG).** Fase 6 tetap ⬜, dikerjakan setelah fase 7 jika waktu memungkinkan; README dan proposal menyebut RAG dan multi-agent sebagai tahap berikutnya | Keputusan sadar pengguna agar paket proposal (M1) siap lebih dulu |
+| 2026-10-03 | 7 | `02_detail-rs.png` 1920×1080 memuat kartu skor, alasan prioritas, temuan, dan grafik harian | **Pilihan (b)** (disetujui pengguna): `02_detail-rs.png` (kartu skor, alasan prioritas, temuan) dan `02b_grafik-harian.png` (grafik harian, hari temuan ditandai), keduanya 1920×1080; versi panjang `02_detail-rs-penuh.png` (1920×2493) dipakai di README | Semua isi itu tidak muat dalam satu layar 1920×1080 |
+| 2026-10-03 | 7 | `make demo` berhasil dari clone baru | Baris `@echo.` (sintaks cmd untuk baris kosong) di target `demo` Makefile dihapus setelah `make demo` pertama di clone gagal di langkah terakhir; `make demo` diulang penuh sampai berhasil (5 menit 0 detik, dengan cache image Docker) | `sh` yang dipakai make tidak mengenal `echo.` |
+| 2026-10-03 | 7 | Konversi video ke `assets/demo.mp4` jika ffmpeg tersedia | mp4 tidak dibuat; `assets/demo.webm` dipakai untuk unggahan video; konversi mp4 hanya opsional (pengguna) | ffmpeg tidak ada di PATH dan ffmpeg bawaan Playwright tidak punya encoder H.264 |
+| 2026-10-03 | 7 | `make verifikasi-reproduksi` tidak menulis selain `reports/verifikasi_reproduksi.json` | Menghitung ulang angka hidden di basis data terpisah `sentinel_verifikasi` (dibuat lalu dihapus); hanya menulis `verifikasi_reproduksi.json`; tidak dicatat sebagai jalan evaluasi hidden di `log_evaluasi_hidden.json`; dijalankan ulang setelah commit `feat(fase-7)` agar hash bersih (`87ac7b4`) | Verifikasi kode dan parameter yang dibekukan, bukan penyetelan; log hidden tetap bukti 1 jalan |
+| 2026-10-03 | 7 | Isi `assets/`: 6 tangkapan layar, 2 grafik, video | Ditambah `02b_grafik-harian.png`, `02_detail-rs-penuh.png`, dan `assets/demo_waktu.json` (waktu per langkah video untuk naskah); skrip Playwright pengemasan di `frontend/paket/` dengan `playwright.paket.config.ts` | Pilihan (b); naskah selaras dengan video; uji asap `make e2e` tidak ikut menjalankan pengemasan |
+| 2026-10-03 | 7 | Uji `make demo` dari clone baru | Clone di folder sementara dengan `COMPOSE_PROJECT_NAME=jknuji` (volume terpisah), memakai cache image Docker; stack clone diturunkan beserta volumenya | Data aktif tidak tersentuh; build tanpa cache lebih lama dari ±5 menit |
 
 ---
 
@@ -306,3 +313,4 @@ Catat di sini setiap keputusan yang berbeda dari roadmap.
 | 2026-10-03 | 3 | ✅ | Sensor IoT + edge AI simulasi: tiga sisi terpisah (dunia/perangkat/server), pohon keputusan akurasi uji 97,75%, Ed25519 + rantai hash, TAMPER_SIG/CHAIN/GAP, SEN-01 (selisih + integritas), lantai prioritas bukti fisik. 2,95 juta pesan; RS tinggi/sedang/rendah utama 8/2/20, hidden 7/6/17. `make sensor` < 3 menit; `make test` 172 lulus. Commit `a475ca0`. Versi 0.4.0. |
 | 2026-10-03 | 4 | ✅ | Evaluasi akurasi; hidden pertama kali dibandingkan dengan label 2026-10-03T06:02:34Z (1 jalan). Hidden: kecurangan terdeteksi 83/86, periode bermasalah masuk daftar periksa 23/28, tuduhan keliru 0/26, kasus sah 2/26, RS jujur ditandai 3/60, Edge AI 97,8%. Tidak ada bug ditemukan; tidak ada parameter diubah. `make test` 189 lulus. Commit `ce4f9eb`. Versi 0.5.0. |
 | 2026-10-03 | 5 | ✅ | Dashboard petugas: daftar periksa, detail RS (rincian skor, temuan, grafik harian, grid sensor + verifikasi tanda tangan, ringkasan template), keputusan berantai hash, audit, panel demo; dataset `demo` kembar utama. Alur demo: RS Tiruan 012 Agustus 2026 rendah 3,3 → tinggi 18,3 (lantai bukti fisik) → minta klarifikasi → audit utuh. `make test` 201, uji asap Playwright lulus. Commit `b12f6e6`. Versi 0.6.0. |
+| 2026-10-03 | 7 | ✅ | Paket demo (dikerjakan sebelum fase 6): `make demo` berhasil dari clone baru (5 menit 0 detik), `make verifikasi-reproduksi` IDENTIK di keempat bagian (komit `87ac7b4`, 169,3 detik; `evaluasi.json` dan log hidden tidak berubah), 8 tangkapan layar + 2 grafik + video `demo.webm` 1920×1080 89,6 detik, `docs/NASKAH_DEMO.md`, README final, pemindaian keamanan bersih. `make test` 204, `make e2e` lulus. Commit `87ac7b4`. Versi 0.7.0. **M1 siap** (tag `proposal-m1`). |
