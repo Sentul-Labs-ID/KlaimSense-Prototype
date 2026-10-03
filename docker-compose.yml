@@ -27,6 +27,8 @@ services:
     volumes:
       # Parameter dibaca langsung dari repo agar perubahan tidak perlu rebuild.
       - ./config:/repo/config:ro
+      # Keluaran evaluasi (fase 4) ditulis ke reports/ di repo.
+      - ./reports:/repo/reports
     ports:
       - "8000:8000"
     depends_on:

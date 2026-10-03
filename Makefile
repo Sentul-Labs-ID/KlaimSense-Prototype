@@ -44,8 +44,11 @@ sensor:
 	$(COMPOSE) run --rm backend python -m sentinel.sensor --dataset hidden
 	$(MAKE) rules
 
+## Evaluasi akurasi: dataset utama lalu hidden; tulis reports/evaluasi.md, .json, dan grafik.
+## Setiap jalan evaluasi hidden tercatat di reports/log_evaluasi_hidden.json.
 eval:
-	@echo Belum tersedia: diimplementasikan di fase 4
+	$(COMPOSE) build backend
+	$(COMPOSE) run --rm backend python -m sentinel.evaluation
 
 demo:
 	@echo Belum tersedia: diimplementasikan di fase 7

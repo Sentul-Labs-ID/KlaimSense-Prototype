@@ -21,6 +21,8 @@ dependencies = [
     # dan hash SHA-256-nya sama di lokal dan container.
     "scikit-learn==1.9.1",
     "numpy>=2.0,<3",
+    # Fase 4: grafik PNG laporan evaluasi (recall per skenario, matriks prioritas).
+    "matplotlib>=3.9",
 ]
 
 [project.optional-dependencies]

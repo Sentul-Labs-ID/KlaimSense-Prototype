@@ -1,0 +1,1778 @@
+{
+  "dibuat_pada": "2026-10-03T06:02:34+00:00",
+  "edge_ai": {
+    "sumber": "backend/sentinel/sensor/model/edge_pohon_keputusan.json (fase 3)",
+    "akurasi_uji": {
+      "pembilang": 16892,
+      "penyebut": 17280,
+      "nilai": 0.9775,
+      "ci95": [
+        0.9752,
+        0.9797
+      ]
+    },
+    "akurasi_tercatat": 0.9775,
+    "confusion_matrix_uji": [
+      [
+        9347,
+        1,
+        0
+      ],
+      [
+        0,
+        2634,
+        242
+      ],
+      [
+        0,
+        145,
+        4911
+      ]
+    ],
+    "label": [
+      "mati",
+      "standby",
+      "terapi"
+    ],
+    "seed_latih": 7001,
+    "jumlah_mesin_hari": {
+      "latih": 280,
+      "uji": 120
+    },
+    "sha256_model": "b5f9f57d0e586f714cf9e1f800992ae18baa4d7b6999980ebd22393a254f9baf"
+  },
+  "utama": {
+    "dataset_id": "utama",
+    "hash_parameter": [
+      "24387a36cefa741379481e4ce37e808a99a2af5fafd9d8a76fd46f62de38aed3"
+    ],
+    "versi_aturan": [
+      "1.1.0"
+    ],
+    "jumlah_kejadian": {
+      "KAP_FISIO": 13,
+      "KAP_HD": 14,
+      "ULANG_IDENTIK": 8,
+      "ULANG_HARI": 9,
+      "HARGA_LEBIH": 7,
+      "ABD_DINI": 7,
+      "SENSOR_PALSU": 14,
+      "TAMPER_SIG": 1,
+      "TAMPER_GAP": 1
+    },
+    "skenario_tanpa_pemetaan": [],
+    "jumlah_kasus_sah": {
+      "FISIO_LEMBUR": 3,
+      "HARGA_ACUAN_LAMA": 7,
+      "HD_SHIFT_TAMBAHAN": 4
+    },
+    "jumlah_temuan": {
+      "BAND-01": 16,
+      "KAP-01": 16,
+      "KAP-02": 18,
+      "SEN-01": 24,
+      "ULG-01": 25,
+      "ULG-02": 12,
+      "WJR-01": 20,
+      "WJR-02": 7
+    },
+    "recall_per_skenario": {
+      "KAP_FISIO": {
+        "aturan": "KAP-01",
+        "recall": {
+          "pembilang": 13,
+          "penyebut": 13,
+          "nilai": 1.0,
+          "ci95": [
+            0.7719,
+            1.0
+          ]
+        },
+        "tertangkap_aturan_apa_pun": {
+          "pembilang": 13,
+          "penyebut": 13,
+          "nilai": 1.0,
+          "ci95": [
+            0.7719,
+            1.0
+          ]
+        }
+      },
+      "KAP_HD": {
+        "aturan": "KAP-02",
+        "recall": {
+          "pembilang": 14,
+          "penyebut": 14,
+          "nilai": 1.0,
+          "ci95": [
+            0.7847,
+            1.0
+          ]
+        },
+        "tertangkap_aturan_apa_pun": {
+          "pembilang": 14,
+          "penyebut": 14,
+          "nilai": 1.0,
+          "ci95": [
+            0.7847,
+            1.0
+          ]
+        }
+      },
+      "ULANG_IDENTIK": {
+        "aturan": "ULG-01",
+        "recall": {
+          "pembilang": 8,
+          "penyebut": 8,
+          "nilai": 1.0,
+          "ci95": [
+            0.6756,
+            1.0
+          ]
+        },
+        "tertangkap_aturan_apa_pun": {
+          "pembilang": 8,
+          "penyebut": 8,
+          "nilai": 1.0,
+          "ci95": [
+            0.6756,
+            1.0
+          ]
+        }
+      },
+      "ULANG_HARI": {
+        "aturan": "ULG-02",
+        "recall": {
+          "pembilang": 9,
+          "penyebut": 9,
+          "nilai": 1.0,
+          "ci95": [
+            0.7009,
+            1.0
+          ]
+        },
+        "tertangkap_aturan_apa_pun": {
+          "pembilang": 9,
+          "penyebut": 9,
+          "nilai": 1.0,
+          "ci95": [
+            0.7009,
+            1.0
+          ]
+        }
+      },
+      "HARGA_LEBIH": {
+        "aturan": "WJR-01",
+        "recall": {
+          "pembilang": 7,
+          "penyebut": 7,
+          "nilai": 1.0,
+          "ci95": [
+            0.6457,
+            1.0
+          ]
+        },
+        "tertangkap_aturan_apa_pun": {
+          "pembilang": 7,
+          "penyebut": 7,
+          "nilai": 1.0,
+          "ci95": [
+            0.6457,
+            1.0
+          ]
+        }
+      },
+      "ABD_DINI": {
+        "aturan": "WJR-02",
+        "recall": {
+          "pembilang": 7,
+          "penyebut": 7,
+          "nilai": 1.0,
+          "ci95": [
+            0.6457,
+            1.0
+          ]
+        },
+        "tertangkap_aturan_apa_pun": {
+          "pembilang": 7,
+          "penyebut": 7,
+          "nilai": 1.0,
+          "ci95": [
+            0.6457,
+            1.0
+          ]
+        }
+      },
+      "SENSOR_PALSU": {
+        "aturan": "SEN-01 (selisih)",
+        "recall": {
+          "pembilang": 12,
+          "penyebut": 14,
+          "nilai": 0.8571,
+          "ci95": [
+            0.6006,
+            0.9599
+          ]
+        },
+        "tertangkap_aturan_apa_pun": {
+          "pembilang": 12,
+          "penyebut": 14,
+          "nilai": 0.8571,
+          "ci95": [
+            0.6006,
+            0.9599
+          ]
+        }
+      },
+      "TAMPER_SIG": {
+        "aturan": "SEN-01 (integritas)",
+        "recall": {
+          "pembilang": 1,
+          "penyebut": 1,
+          "nilai": 1.0,
+          "ci95": [
+            0.2065,
+            1.0
+          ]
+        },
+        "tertangkap_aturan_apa_pun": {
+          "pembilang": 1,
+          "penyebut": 1,
+          "nilai": 1.0,
+          "ci95": [
+            0.2065,
+            1.0
+          ]
+        }
+      },
+      "TAMPER_GAP": {
+        "aturan": "SEN-01 (integritas)",
+        "recall": {
+          "pembilang": 1,
+          "penyebut": 1,
+          "nilai": 1.0,
+          "ci95": [
+            0.2065,
+            1.0
+          ]
+        },
+        "tertangkap_aturan_apa_pun": {
+          "pembilang": 1,
+          "penyebut": 1,
+          "nilai": 1.0,
+          "ci95": [
+            0.2065,
+            1.0
+          ]
+        }
+      }
+    },
+    "recall_gabungan_kecurangan": {
+      "pembilang": 70,
+      "penyebut": 72,
+      "nilai": 0.9722,
+      "ci95": [
+        0.9043,
+        0.9923
+      ]
+    },
+    "recall_gabungan_kecurangan_aturan_apa_pun": {
+      "pembilang": 70,
+      "penyebut": 72,
+      "nilai": 0.9722,
+      "ci95": [
+        0.9043,
+        0.9923
+      ]
+    },
+    "presisi_per_aturan": {
+      "KAP-01": {
+        "jumlah_temuan": 16,
+        "benar": {
+          "pembilang": 13,
+          "penyebut": 16,
+          "nilai": 0.8125,
+          "ci95": [
+            0.5699,
+            0.9341
+          ]
+        },
+        "kasus_sah": {
+          "pembilang": 3,
+          "penyebut": 16,
+          "nilai": 0.1875,
+          "ci95": [
+            0.0659,
+            0.4301
+          ]
+        },
+        "keliru": {
+          "pembilang": 0,
+          "penyebut": 16,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.1936
+          ]
+        }
+      },
+      "KAP-02": {
+        "jumlah_temuan": 18,
+        "benar": {
+          "pembilang": 14,
+          "penyebut": 18,
+          "nilai": 0.7778,
+          "ci95": [
+            0.5479,
+            0.91
+          ]
+        },
+        "kasus_sah": {
+          "pembilang": 4,
+          "penyebut": 18,
+          "nilai": 0.2222,
+          "ci95": [
+            0.09,
+            0.4521
+          ]
+        },
+        "keliru": {
+          "pembilang": 0,
+          "penyebut": 18,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.1759
+          ]
+        }
+      },
+      "ULG-01": {
+        "jumlah_temuan": 25,
+        "benar": {
+          "pembilang": 25,
+          "penyebut": 25,
+          "nilai": 1.0,
+          "ci95": [
+            0.8668,
+            1.0
+          ]
+        },
+        "kasus_sah": {
+          "pembilang": 0,
+          "penyebut": 25,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.1332
+          ]
+        },
+        "keliru": {
+          "pembilang": 0,
+          "penyebut": 25,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.1332
+          ]
+        }
+      },
+      "ULG-02": {
+        "jumlah_temuan": 12,
+        "benar": {
+          "pembilang": 12,
+          "penyebut": 12,
+          "nilai": 1.0,
+          "ci95": [
+            0.7575,
+            1.0
+          ]
+        },
+        "kasus_sah": {
+          "pembilang": 0,
+          "penyebut": 12,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.2425
+          ]
+        },
+        "keliru": {
+          "pembilang": 0,
+          "penyebut": 12,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.2425
+          ]
+        }
+      },
+      "WJR-01": {
+        "jumlah_temuan": 20,
+        "benar": {
+          "pembilang": 13,
+          "penyebut": 20,
+          "nilai": 0.65,
+          "ci95": [
+            0.4329,
+            0.8188
+          ]
+        },
+        "kasus_sah": {
+          "pembilang": 7,
+          "penyebut": 20,
+          "nilai": 0.35,
+          "ci95": [
+            0.1812,
+            0.5671
+          ]
+        },
+        "keliru": {
+          "pembilang": 0,
+          "penyebut": 20,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.1611
+          ]
+        }
+      },
+      "WJR-02": {
+        "jumlah_temuan": 7,
+        "benar": {
+          "pembilang": 7,
+          "penyebut": 7,
+          "nilai": 1.0,
+          "ci95": [
+            0.6457,
+            1.0
+          ]
+        },
+        "kasus_sah": {
+          "pembilang": 0,
+          "penyebut": 7,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.3543
+          ]
+        },
+        "keliru": {
+          "pembilang": 0,
+          "penyebut": 7,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.3543
+          ]
+        }
+      },
+      "SEN-01 (selisih)": {
+        "jumlah_temuan": 22,
+        "benar": {
+          "pembilang": 22,
+          "penyebut": 22,
+          "nilai": 1.0,
+          "ci95": [
+            0.8513,
+            1.0
+          ]
+        },
+        "kasus_sah": {
+          "pembilang": 0,
+          "penyebut": 22,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.1487
+          ]
+        },
+        "keliru": {
+          "pembilang": 0,
+          "penyebut": 22,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.1487
+          ]
+        }
+      },
+      "SEN-01 (integritas)": {
+        "jumlah_temuan": 2,
+        "benar": {
+          "pembilang": 2,
+          "penyebut": 2,
+          "nilai": 1.0,
+          "ci95": [
+            0.3424,
+            1.0
+          ]
+        },
+        "kasus_sah": {
+          "pembilang": 0,
+          "penyebut": 2,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.6576
+          ]
+        },
+        "keliru": {
+          "pembilang": 0,
+          "penyebut": 2,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.6576
+          ]
+        }
+      }
+    },
+    "prioritas": {
+      "jumlah_rs_periode": 90,
+      "jumlah_per_kondisi": {
+        "bermasalah": 23,
+        "gangguan_sensor": 2,
+        "hanya_kasus_sah": 13,
+        "bersih": 52
+      },
+      "tinggi": {
+        "presisi": {
+          "pembilang": 14,
+          "penyebut": 14,
+          "nilai": 1.0,
+          "ci95": [
+            0.7847,
+            1.0
+          ]
+        },
+        "recall": {
+          "pembilang": 14,
+          "penyebut": 23,
+          "nilai": 0.6087,
+          "ci95": [
+            0.4079,
+            0.7784
+          ]
+        }
+      },
+      "tinggi_sedang": {
+        "presisi": {
+          "pembilang": 18,
+          "penyebut": 20,
+          "nilai": 0.9,
+          "ci95": [
+            0.699,
+            0.9721
+          ]
+        },
+        "recall": {
+          "pembilang": 18,
+          "penyebut": 23,
+          "nilai": 0.7826,
+          "ci95": [
+            0.581,
+            0.9034
+          ]
+        }
+      },
+      "top_5": {
+        "pembilang": 5,
+        "penyebut": 5,
+        "nilai": 1.0,
+        "ci95": [
+          0.5655,
+          1.0
+        ]
+      },
+      "top_10": {
+        "pembilang": 10,
+        "penyebut": 10,
+        "nilai": 1.0,
+        "ci95": [
+          0.7225,
+          1.0
+        ]
+      },
+      "matriks_prioritas_kondisi": {
+        "tinggi": {
+          "bermasalah": 14,
+          "gangguan_sensor": 0,
+          "hanya_kasus_sah": 0,
+          "bersih": 0
+        },
+        "sedang": {
+          "bermasalah": 4,
+          "gangguan_sensor": 2,
+          "hanya_kasus_sah": 0,
+          "bersih": 0
+        },
+        "rendah": {
+          "bermasalah": 5,
+          "gangguan_sensor": 0,
+          "hanya_kasus_sah": 13,
+          "bersih": 52
+        }
+      },
+      "sebaran_per_profil": {
+        "jujur": {
+          "tinggi": 0,
+          "sedang": 1,
+          "rendah": 56
+        },
+        "disisipi": {
+          "tinggi": 14,
+          "sedang": 4,
+          "rendah": 6
+        },
+        "jujur_sibuk": {
+          "tinggi": 0,
+          "sedang": 0,
+          "rendah": 6
+        },
+        "jujur_volume_tinggi": {
+          "tinggi": 0,
+          "sedang": 1,
+          "rendah": 2
+        }
+      },
+      "ditandai": {
+        "tuduhan_keliru": {
+          "pembilang": 0,
+          "penyebut": 20,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.1611
+          ]
+        },
+        "kasus_sah_perlu_klarifikasi": {
+          "pembilang": 0,
+          "penyebut": 20,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.1611
+          ]
+        },
+        "gangguan_sensor": {
+          "pembilang": 2,
+          "penyebut": 20,
+          "nilai": 0.1,
+          "ci95": [
+            0.0279,
+            0.301
+          ]
+        }
+      },
+      "rs_jujur_ikut_ditandai": {
+        "pembilang": 2,
+        "penyebut": 66,
+        "nilai": 0.0303,
+        "ci95": [
+          0.0083,
+          0.1039
+        ]
+      },
+      "daftar_tinggi": [
+        {
+          "rs_id": "RS-003",
+          "periode": "2026-09",
+          "skor": 50.0,
+          "alasan_prioritas": "ambang skor ≥ 20; lantai: SEN-01-selisih jenuh",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-026",
+          "periode": "2026-07",
+          "skor": 50.0,
+          "alasan_prioritas": "ambang skor ≥ 20; lantai: KAP-02 jenuh, SEN-01-selisih jenuh",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-026",
+          "periode": "2026-09",
+          "skor": 38.33,
+          "alasan_prioritas": "ambang skor ≥ 20",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-003",
+          "periode": "2026-07",
+          "skor": 33.33,
+          "alasan_prioritas": "ambang skor ≥ 20; lantai: SEN-01-selisih jenuh",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-008",
+          "periode": "2026-09",
+          "skor": 30.0,
+          "alasan_prioritas": "ambang skor ≥ 20; lantai: KAP-01 jenuh",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-010",
+          "periode": "2026-09",
+          "skor": 30.0,
+          "alasan_prioritas": "ambang skor ≥ 20; lantai: SEN-01-selisih jenuh",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-028",
+          "periode": "2026-07",
+          "skor": 30.0,
+          "alasan_prioritas": "ambang skor ≥ 20",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-003",
+          "periode": "2026-08",
+          "skor": 26.67,
+          "alasan_prioritas": "ambang skor ≥ 20",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-025",
+          "periode": "2026-09",
+          "skor": 25.0,
+          "alasan_prioritas": "ambang skor ≥ 20",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-008",
+          "periode": "2026-08",
+          "skor": 21.67,
+          "alasan_prioritas": "ambang skor ≥ 20",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-010",
+          "periode": "2026-07",
+          "skor": 21.67,
+          "alasan_prioritas": "ambang skor ≥ 20",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-014",
+          "periode": "2026-08",
+          "skor": 15.0,
+          "alasan_prioritas": "lantai: KAP-02 jenuh",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-024",
+          "periode": "2026-07",
+          "skor": 15.0,
+          "alasan_prioritas": "lantai: KAP-01 jenuh",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-024",
+          "periode": "2026-08",
+          "skor": 15.0,
+          "alasan_prioritas": "lantai: KAP-01 jenuh",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        }
+      ]
+    },
+    "prioritas_definisi_harfiah": {
+      "catatan": "RS-periode yang hanya berisi gangguan sensor (TAMPER) dihitung 'bersih'.",
+      "ditandai": {
+        "tuduhan_keliru": {
+          "pembilang": 2,
+          "penyebut": 20,
+          "nilai": 0.1,
+          "ci95": [
+            0.0279,
+            0.301
+          ]
+        },
+        "kasus_sah_perlu_klarifikasi": {
+          "pembilang": 0,
+          "penyebut": 20,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.1611
+          ]
+        },
+        "gangguan_sensor": {
+          "pembilang": 0,
+          "penyebut": 20,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.1611
+          ]
+        }
+      },
+      "matriks_prioritas_kondisi": {
+        "tinggi": {
+          "bermasalah": 14,
+          "gangguan_sensor": 0,
+          "hanya_kasus_sah": 0,
+          "bersih": 0
+        },
+        "sedang": {
+          "bermasalah": 4,
+          "gangguan_sensor": 0,
+          "hanya_kasus_sah": 0,
+          "bersih": 2
+        },
+        "rendah": {
+          "bermasalah": 5,
+          "gangguan_sensor": 0,
+          "hanya_kasus_sah": 13,
+          "bersih": 52
+        }
+      }
+    },
+    "integritas_sensor": {
+      "TAMPER_SIG": {
+        "pembilang": 1,
+        "penyebut": 1,
+        "nilai": 1.0,
+        "ci95": [
+          0.2065,
+          1.0
+        ]
+      },
+      "TAMPER_GAP": {
+        "pembilang": 1,
+        "penyebut": 1,
+        "nilai": 1.0,
+        "ci95": [
+          0.2065,
+          1.0
+        ]
+      },
+      "jumlah_anomali": 7,
+      "anomali_tanpa_kejadian": 0,
+      "anomali_tanpa_kejadian_per_jenis": {}
+    },
+    "band_01": {
+      "jumlah_temuan": 16,
+      "per_kondisi_rs_periode": {
+        "hanya_kasus_sah": 2,
+        "bermasalah": 8,
+        "bersih": 6
+      },
+      "per_profil_rs": {
+        "jujur": 6,
+        "disisipi": 8,
+        "jujur_sibuk": 2
+      },
+      "pada_rs_periode_bermasalah": {
+        "pembilang": 8,
+        "penyebut": 16,
+        "nilai": 0.5,
+        "ci95": [
+          0.28,
+          0.72
+        ]
+      }
+    }
+  },
+  "log_hidden": {
+    "pertama": "2026-10-03T06:02:34+00:00",
+    "jalan": [
+      "2026-10-03T06:02:34+00:00"
+    ]
+  },
+  "hidden": {
+    "dataset_id": "hidden",
+    "hash_parameter": [
+      "24387a36cefa741379481e4ce37e808a99a2af5fafd9d8a76fd46f62de38aed3"
+    ],
+    "versi_aturan": [
+      "1.1.0"
+    ],
+    "jumlah_kejadian": {
+      "KAP_FISIO": 14,
+      "KAP_HD": 14,
+      "ULANG_IDENTIK": 7,
+      "ULANG_HARI": 17,
+      "HARGA_LEBIH": 13,
+      "ABD_DINI": 7,
+      "SENSOR_PALSU": 14,
+      "TAMPER_SIG": 1,
+      "TAMPER_GAP": 1
+    },
+    "skenario_tanpa_pemetaan": [],
+    "jumlah_kasus_sah": {
+      "HARGA_ACUAN_LAMA": 9,
+      "HD_SHIFT_TAMBAHAN": 4,
+      "FISIO_LEMBUR": 2
+    },
+    "jumlah_temuan": {
+      "BAND-01": 13,
+      "KAP-01": 16,
+      "KAP-02": 18,
+      "SEN-01": 14,
+      "ULG-01": 36,
+      "ULG-02": 25,
+      "WJR-01": 31,
+      "WJR-02": 7
+    },
+    "recall_per_skenario": {
+      "KAP_FISIO": {
+        "aturan": "KAP-01",
+        "recall": {
+          "pembilang": 14,
+          "penyebut": 14,
+          "nilai": 1.0,
+          "ci95": [
+            0.7847,
+            1.0
+          ]
+        },
+        "tertangkap_aturan_apa_pun": {
+          "pembilang": 14,
+          "penyebut": 14,
+          "nilai": 1.0,
+          "ci95": [
+            0.7847,
+            1.0
+          ]
+        }
+      },
+      "KAP_HD": {
+        "aturan": "KAP-02",
+        "recall": {
+          "pembilang": 14,
+          "penyebut": 14,
+          "nilai": 1.0,
+          "ci95": [
+            0.7847,
+            1.0
+          ]
+        },
+        "tertangkap_aturan_apa_pun": {
+          "pembilang": 14,
+          "penyebut": 14,
+          "nilai": 1.0,
+          "ci95": [
+            0.7847,
+            1.0
+          ]
+        }
+      },
+      "ULANG_IDENTIK": {
+        "aturan": "ULG-01",
+        "recall": {
+          "pembilang": 7,
+          "penyebut": 7,
+          "nilai": 1.0,
+          "ci95": [
+            0.6457,
+            1.0
+          ]
+        },
+        "tertangkap_aturan_apa_pun": {
+          "pembilang": 7,
+          "penyebut": 7,
+          "nilai": 1.0,
+          "ci95": [
+            0.6457,
+            1.0
+          ]
+        }
+      },
+      "ULANG_HARI": {
+        "aturan": "ULG-02",
+        "recall": {
+          "pembilang": 17,
+          "penyebut": 17,
+          "nilai": 1.0,
+          "ci95": [
+            0.8157,
+            1.0
+          ]
+        },
+        "tertangkap_aturan_apa_pun": {
+          "pembilang": 17,
+          "penyebut": 17,
+          "nilai": 1.0,
+          "ci95": [
+            0.8157,
+            1.0
+          ]
+        }
+      },
+      "HARGA_LEBIH": {
+        "aturan": "WJR-01",
+        "recall": {
+          "pembilang": 13,
+          "penyebut": 13,
+          "nilai": 1.0,
+          "ci95": [
+            0.7719,
+            1.0
+          ]
+        },
+        "tertangkap_aturan_apa_pun": {
+          "pembilang": 13,
+          "penyebut": 13,
+          "nilai": 1.0,
+          "ci95": [
+            0.7719,
+            1.0
+          ]
+        }
+      },
+      "ABD_DINI": {
+        "aturan": "WJR-02",
+        "recall": {
+          "pembilang": 7,
+          "penyebut": 7,
+          "nilai": 1.0,
+          "ci95": [
+            0.6457,
+            1.0
+          ]
+        },
+        "tertangkap_aturan_apa_pun": {
+          "pembilang": 7,
+          "penyebut": 7,
+          "nilai": 1.0,
+          "ci95": [
+            0.6457,
+            1.0
+          ]
+        }
+      },
+      "SENSOR_PALSU": {
+        "aturan": "SEN-01 (selisih)",
+        "recall": {
+          "pembilang": 11,
+          "penyebut": 14,
+          "nilai": 0.7857,
+          "ci95": [
+            0.5241,
+            0.9243
+          ]
+        },
+        "tertangkap_aturan_apa_pun": {
+          "pembilang": 11,
+          "penyebut": 14,
+          "nilai": 0.7857,
+          "ci95": [
+            0.5241,
+            0.9243
+          ]
+        }
+      },
+      "TAMPER_SIG": {
+        "aturan": "SEN-01 (integritas)",
+        "recall": {
+          "pembilang": 1,
+          "penyebut": 1,
+          "nilai": 1.0,
+          "ci95": [
+            0.2065,
+            1.0
+          ]
+        },
+        "tertangkap_aturan_apa_pun": {
+          "pembilang": 1,
+          "penyebut": 1,
+          "nilai": 1.0,
+          "ci95": [
+            0.2065,
+            1.0
+          ]
+        }
+      },
+      "TAMPER_GAP": {
+        "aturan": "SEN-01 (integritas)",
+        "recall": {
+          "pembilang": 1,
+          "penyebut": 1,
+          "nilai": 1.0,
+          "ci95": [
+            0.2065,
+            1.0
+          ]
+        },
+        "tertangkap_aturan_apa_pun": {
+          "pembilang": 1,
+          "penyebut": 1,
+          "nilai": 1.0,
+          "ci95": [
+            0.2065,
+            1.0
+          ]
+        }
+      }
+    },
+    "recall_gabungan_kecurangan": {
+      "pembilang": 83,
+      "penyebut": 86,
+      "nilai": 0.9651,
+      "ci95": [
+        0.9024,
+        0.9881
+      ]
+    },
+    "recall_gabungan_kecurangan_aturan_apa_pun": {
+      "pembilang": 83,
+      "penyebut": 86,
+      "nilai": 0.9651,
+      "ci95": [
+        0.9024,
+        0.9881
+      ]
+    },
+    "presisi_per_aturan": {
+      "KAP-01": {
+        "jumlah_temuan": 16,
+        "benar": {
+          "pembilang": 14,
+          "penyebut": 16,
+          "nilai": 0.875,
+          "ci95": [
+            0.6398,
+            0.965
+          ]
+        },
+        "kasus_sah": {
+          "pembilang": 2,
+          "penyebut": 16,
+          "nilai": 0.125,
+          "ci95": [
+            0.035,
+            0.3602
+          ]
+        },
+        "keliru": {
+          "pembilang": 0,
+          "penyebut": 16,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.1936
+          ]
+        }
+      },
+      "KAP-02": {
+        "jumlah_temuan": 18,
+        "benar": {
+          "pembilang": 14,
+          "penyebut": 18,
+          "nilai": 0.7778,
+          "ci95": [
+            0.5479,
+            0.91
+          ]
+        },
+        "kasus_sah": {
+          "pembilang": 4,
+          "penyebut": 18,
+          "nilai": 0.2222,
+          "ci95": [
+            0.09,
+            0.4521
+          ]
+        },
+        "keliru": {
+          "pembilang": 0,
+          "penyebut": 18,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.1759
+          ]
+        }
+      },
+      "ULG-01": {
+        "jumlah_temuan": 36,
+        "benar": {
+          "pembilang": 36,
+          "penyebut": 36,
+          "nilai": 1.0,
+          "ci95": [
+            0.9036,
+            1.0
+          ]
+        },
+        "kasus_sah": {
+          "pembilang": 0,
+          "penyebut": 36,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.0964
+          ]
+        },
+        "keliru": {
+          "pembilang": 0,
+          "penyebut": 36,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.0964
+          ]
+        }
+      },
+      "ULG-02": {
+        "jumlah_temuan": 25,
+        "benar": {
+          "pembilang": 25,
+          "penyebut": 25,
+          "nilai": 1.0,
+          "ci95": [
+            0.8668,
+            1.0
+          ]
+        },
+        "kasus_sah": {
+          "pembilang": 0,
+          "penyebut": 25,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.1332
+          ]
+        },
+        "keliru": {
+          "pembilang": 0,
+          "penyebut": 25,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.1332
+          ]
+        }
+      },
+      "WJR-01": {
+        "jumlah_temuan": 31,
+        "benar": {
+          "pembilang": 22,
+          "penyebut": 31,
+          "nilai": 0.7097,
+          "ci95": [
+            0.5341,
+            0.839
+          ]
+        },
+        "kasus_sah": {
+          "pembilang": 9,
+          "penyebut": 31,
+          "nilai": 0.2903,
+          "ci95": [
+            0.161,
+            0.4659
+          ]
+        },
+        "keliru": {
+          "pembilang": 0,
+          "penyebut": 31,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.1103
+          ]
+        }
+      },
+      "WJR-02": {
+        "jumlah_temuan": 7,
+        "benar": {
+          "pembilang": 7,
+          "penyebut": 7,
+          "nilai": 1.0,
+          "ci95": [
+            0.6457,
+            1.0
+          ]
+        },
+        "kasus_sah": {
+          "pembilang": 0,
+          "penyebut": 7,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.3543
+          ]
+        },
+        "keliru": {
+          "pembilang": 0,
+          "penyebut": 7,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.3543
+          ]
+        }
+      },
+      "SEN-01 (selisih)": {
+        "jumlah_temuan": 12,
+        "benar": {
+          "pembilang": 11,
+          "penyebut": 12,
+          "nilai": 0.9167,
+          "ci95": [
+            0.6461,
+            0.9851
+          ]
+        },
+        "kasus_sah": {
+          "pembilang": 0,
+          "penyebut": 12,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.2425
+          ]
+        },
+        "keliru": {
+          "pembilang": 1,
+          "penyebut": 12,
+          "nilai": 0.0833,
+          "ci95": [
+            0.0149,
+            0.3539
+          ]
+        }
+      },
+      "SEN-01 (integritas)": {
+        "jumlah_temuan": 2,
+        "benar": {
+          "pembilang": 2,
+          "penyebut": 2,
+          "nilai": 1.0,
+          "ci95": [
+            0.3424,
+            1.0
+          ]
+        },
+        "kasus_sah": {
+          "pembilang": 0,
+          "penyebut": 2,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.6576
+          ]
+        },
+        "keliru": {
+          "pembilang": 0,
+          "penyebut": 2,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.6576
+          ]
+        }
+      }
+    },
+    "prioritas": {
+      "jumlah_rs_periode": 90,
+      "jumlah_per_kondisi": {
+        "bermasalah": 28,
+        "gangguan_sensor": 1,
+        "hanya_kasus_sah": 11,
+        "bersih": 50
+      },
+      "tinggi": {
+        "presisi": {
+          "pembilang": 12,
+          "penyebut": 12,
+          "nilai": 1.0,
+          "ci95": [
+            0.7575,
+            1.0
+          ]
+        },
+        "recall": {
+          "pembilang": 12,
+          "penyebut": 28,
+          "nilai": 0.4286,
+          "ci95": [
+            0.2651,
+            0.6093
+          ]
+        }
+      },
+      "tinggi_sedang": {
+        "presisi": {
+          "pembilang": 23,
+          "penyebut": 26,
+          "nilai": 0.8846,
+          "ci95": [
+            0.7102,
+            0.96
+          ]
+        },
+        "recall": {
+          "pembilang": 23,
+          "penyebut": 28,
+          "nilai": 0.8214,
+          "ci95": [
+            0.6441,
+            0.9212
+          ]
+        }
+      },
+      "top_5": {
+        "pembilang": 5,
+        "penyebut": 5,
+        "nilai": 1.0,
+        "ci95": [
+          0.5655,
+          1.0
+        ]
+      },
+      "top_10": {
+        "pembilang": 10,
+        "penyebut": 10,
+        "nilai": 1.0,
+        "ci95": [
+          0.7225,
+          1.0
+        ]
+      },
+      "matriks_prioritas_kondisi": {
+        "tinggi": {
+          "bermasalah": 12,
+          "gangguan_sensor": 0,
+          "hanya_kasus_sah": 0,
+          "bersih": 0
+        },
+        "sedang": {
+          "bermasalah": 11,
+          "gangguan_sensor": 1,
+          "hanya_kasus_sah": 2,
+          "bersih": 0
+        },
+        "rendah": {
+          "bermasalah": 5,
+          "gangguan_sensor": 0,
+          "hanya_kasus_sah": 9,
+          "bersih": 50
+        }
+      },
+      "sebaran_per_profil": {
+        "jujur": {
+          "tinggi": 0,
+          "sedang": 1,
+          "rendah": 50
+        },
+        "jujur_sibuk": {
+          "tinggi": 0,
+          "sedang": 1,
+          "rendah": 5
+        },
+        "disisipi": {
+          "tinggi": 12,
+          "sedang": 11,
+          "rendah": 7
+        },
+        "jujur_volume_tinggi": {
+          "tinggi": 0,
+          "sedang": 1,
+          "rendah": 2
+        }
+      },
+      "ditandai": {
+        "tuduhan_keliru": {
+          "pembilang": 0,
+          "penyebut": 26,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.1287
+          ]
+        },
+        "kasus_sah_perlu_klarifikasi": {
+          "pembilang": 2,
+          "penyebut": 26,
+          "nilai": 0.0769,
+          "ci95": [
+            0.0214,
+            0.2414
+          ]
+        },
+        "gangguan_sensor": {
+          "pembilang": 1,
+          "penyebut": 26,
+          "nilai": 0.0385,
+          "ci95": [
+            0.0068,
+            0.1889
+          ]
+        }
+      },
+      "rs_jujur_ikut_ditandai": {
+        "pembilang": 3,
+        "penyebut": 60,
+        "nilai": 0.05,
+        "ci95": [
+          0.0171,
+          0.137
+        ]
+      },
+      "daftar_tinggi": [
+        {
+          "rs_id": "RS-521",
+          "periode": "2026-07",
+          "skor": 40.0,
+          "alasan_prioritas": "ambang skor ≥ 20; lantai: KAP-01 jenuh",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-521",
+          "periode": "2026-09",
+          "skor": 40.0,
+          "alasan_prioritas": "ambang skor ≥ 20; lantai: KAP-01 jenuh",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-515",
+          "periode": "2026-07",
+          "skor": 38.33,
+          "alasan_prioritas": "ambang skor ≥ 20",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-515",
+          "periode": "2026-08",
+          "skor": 30.0,
+          "alasan_prioritas": "ambang skor ≥ 20",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-518",
+          "periode": "2026-08",
+          "skor": 30.0,
+          "alasan_prioritas": "ambang skor ≥ 20; lantai: SEN-01-selisih jenuh",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-524",
+          "periode": "2026-09",
+          "skor": 25.0,
+          "alasan_prioritas": "ambang skor ≥ 20",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-527",
+          "periode": "2026-07",
+          "skor": 25.0,
+          "alasan_prioritas": "ambang skor ≥ 20",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-521",
+          "periode": "2026-08",
+          "skor": 21.67,
+          "alasan_prioritas": "ambang skor ≥ 20",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-527",
+          "periode": "2026-09",
+          "skor": 21.67,
+          "alasan_prioritas": "ambang skor ≥ 20",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-511",
+          "periode": "2026-08",
+          "skor": 20.0,
+          "alasan_prioritas": "ambang skor ≥ 20; lantai: KAP-02 jenuh",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-524",
+          "periode": "2026-08",
+          "skor": 20.0,
+          "alasan_prioritas": "ambang skor ≥ 20",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        },
+        {
+          "rs_id": "RS-525",
+          "periode": "2026-09",
+          "skor": 15.0,
+          "alasan_prioritas": "lantai: KAP-02 jenuh",
+          "kondisi": "bermasalah",
+          "profil": "disisipi"
+        }
+      ]
+    },
+    "prioritas_definisi_harfiah": {
+      "catatan": "RS-periode yang hanya berisi gangguan sensor (TAMPER) dihitung 'bersih'.",
+      "ditandai": {
+        "tuduhan_keliru": {
+          "pembilang": 1,
+          "penyebut": 26,
+          "nilai": 0.0385,
+          "ci95": [
+            0.0068,
+            0.1889
+          ]
+        },
+        "kasus_sah_perlu_klarifikasi": {
+          "pembilang": 2,
+          "penyebut": 26,
+          "nilai": 0.0769,
+          "ci95": [
+            0.0214,
+            0.2414
+          ]
+        },
+        "gangguan_sensor": {
+          "pembilang": 0,
+          "penyebut": 26,
+          "nilai": 0.0,
+          "ci95": [
+            0.0,
+            0.1287
+          ]
+        }
+      },
+      "matriks_prioritas_kondisi": {
+        "tinggi": {
+          "bermasalah": 12,
+          "gangguan_sensor": 0,
+          "hanya_kasus_sah": 0,
+          "bersih": 0
+        },
+        "sedang": {
+          "bermasalah": 11,
+          "gangguan_sensor": 0,
+          "hanya_kasus_sah": 2,
+          "bersih": 1
+        },
+        "rendah": {
+          "bermasalah": 5,
+          "gangguan_sensor": 0,
+          "hanya_kasus_sah": 9,
+          "bersih": 50
+        }
+      }
+    },
+    "integritas_sensor": {
+      "TAMPER_SIG": {
+        "pembilang": 1,
+        "penyebut": 1,
+        "nilai": 1.0,
+        "ci95": [
+          0.2065,
+          1.0
+        ]
+      },
+      "TAMPER_GAP": {
+        "pembilang": 1,
+        "penyebut": 1,
+        "nilai": 1.0,
+        "ci95": [
+          0.2065,
+          1.0
+        ]
+      },
+      "jumlah_anomali": 6,
+      "anomali_tanpa_kejadian": 0,
+      "anomali_tanpa_kejadian_per_jenis": {}
+    },
+    "band_01": {
+      "jumlah_temuan": 13,
+      "per_kondisi_rs_periode": {
+        "bersih": 9,
+        "hanya_kasus_sah": 4
+      },
+      "per_profil_rs": {
+        "jujur": 3,
+        "jujur_sibuk": 10
+      },
+      "pada_rs_periode_bermasalah": {
+        "pembilang": 0,
+        "penyebut": 13,
+        "nilai": 0.0,
+        "ci95": [
+          0.0,
+          0.2281
+        ]
+      }
+    }
+  },
+  "proposal": {
+    "kecurangan_tertangkap": {
+      "pembilang": 83,
+      "penyebut": 86,
+      "nilai": 0.9651,
+      "ci95": [
+        0.9024,
+        0.9881
+      ]
+    },
+    "tuduhan_keliru": {
+      "pembilang": 0,
+      "penyebut": 26,
+      "nilai": 0.0,
+      "ci95": [
+        0.0,
+        0.1287
+      ]
+    },
+    "kasus_sah_perlu_klarifikasi": {
+      "pembilang": 2,
+      "penyebut": 26,
+      "nilai": 0.0769,
+      "ci95": [
+        0.0214,
+        0.2414
+      ]
+    },
+    "gangguan_sensor_ditandai": {
+      "pembilang": 1,
+      "penyebut": 26,
+      "nilai": 0.0385,
+      "ci95": [
+        0.0068,
+        0.1889
+      ]
+    },
+    "rs_jujur_ikut_ditandai": {
+      "pembilang": 3,
+      "penyebut": 60,
+      "nilai": 0.05,
+      "ci95": [
+        0.0171,
+        0.137
+      ]
+    },
+    "akurasi_edge_ai": {
+      "pembilang": 16892,
+      "penyebut": 17280,
+      "nilai": 0.9775,
+      "ci95": [
+        0.9752,
+        0.9797
+      ]
+    }
+  }
+}

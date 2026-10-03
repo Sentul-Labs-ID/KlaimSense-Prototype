@@ -156,6 +156,28 @@ Contoh penjelasan: "Hemodialisa 12 Agustus 2026: 30 sesi ditagih (butuh 120 jam-
 
 Kasus sah "shift darurat" (sesi tambahan yang benar-benar terjadi) tetap tertandai KAP-02 karena melewati kapasitas, tetapi **tidak** tertandai SEN-01 karena mesinnya memang bekerja. Ini membantu petugas membedakan "sibuk sungguhan" dari "tagihan tanpa kerja mesin".
 
+## Evaluasi akurasi (fase 4)
+
+`sentinel/evaluation/` adalah satu-satunya modul yang membaca label (`ground_truth`, `profil_rs`, `kasus_sah`). Modul ini **hanya membaca**: di PostgreSQL transaksinya dibuka READ ONLY dan selalu di-rollback.
+
+**Pasangan skenario dan aturan.** KAP_FISIO → KAP-01, KAP_HD → KAP-02, ULANG_IDENTIK → ULG-01, ULANG_HARI → ULG-02, HARGA_LEBIH → WJR-01, ABD_DINI → WJR-02, SENSOR_PALSU → SEN-01 (selisih), TAMPER_SIG dan TAMPER_GAP → SEN-01 (integritas). BAND-01 tidak dipasangkan dan dilaporkan terpisah sebagai sinyal pendukung.
+
+**Apa yang diukur:**
+
+- **Kejadian tertangkap (recall).** Sebuah kejadian kecurangan dihitung tertangkap bila aturan pasangannya menandai rumah sakit dan tanggal yang sama. Untuk aturan per tagihan (ULG, WJR), temuannya harus memuat tagihan kejadian itu.
+- **Ketepatan temuan.** Setiap temuan dimasukkan ke salah satu dari tiga kelompok:
+  - **benar**: memuat tagihan kecurangan, atau temuan integritas pada hari gangguan sensor;
+  - **kasus sah**: kejadian sah di dekat batas aturan yang memang perlu klarifikasi;
+  - **keliru**: selain keduanya.
+- **Prioritas** diukur di level yang dilihat petugas, yaitu **rumah sakit × bulan**. Setiap RS-periode berada di salah satu kondisi:
+  - **bermasalah**: memuat kecurangan;
+  - **hanya gangguan sensor**: dilaporkan terpisah dan tidak dihitung sebagai tuduhan keliru;
+  - **hanya kasus sah**;
+  - **bersih**.
+- **Setiap angka** ditulis bersama jumlahnya (misalnya 13/14) dan interval kepercayaan 95% Wilson, karena jumlah kejadian kecil.
+
+**Kejujuran.** Dataset utama dipakai untuk mengembangkan kode evaluasi. Dataset hidden dijalankan setelah kodenya selesai; waktu jalan pertamanya dicatat di `reports/log_evaluasi_hidden.json` dan di laporan. Parameter, bobot, ambang, dan aturan tidak diubah berdasarkan hasil hidden.
+
 ## Modul per fase
 
 | Fase | Modul | Isi |
@@ -164,7 +186,7 @@ Kasus sah "shift darurat" (sesi tambahan yang benar-benar terjadi) tetap tertand
 | 1 | `sentinel/models/`, `sentinel/generator/` | Skema tabel; generator data tiruan berseed, `sesi_aktual`, `ground_truth`, dataset `--hidden` |
 | 2 | `sentinel/rules/`, `sentinel/models/hasil.py` | KAP-01, KAP-02, ULG-01, ULG-02, WJR-01, WJR-02, BAND-01; tabel `temuan` dan `skor` 0–100 |
 | 3 | `sentinel/sensor/`, `sentinel/models/sensor.py`, `sentinel/rules/aturan_sensor.py` | Simulator arus (dunia), edge AI + Ed25519 + hash chain (perangkat), ingest + ringkasan harian + `POST /sensor/ingest` (server), SEN-01, TAMPER_* |
-| 4 | `sentinel/evaluation/` | Recall, presisi, FPR per skenario; satu-satunya modul yang membaca ground truth |
+| 4 | `sentinel/evaluation/` | Recall per skenario, presisi tiga kelas per aturan, metrik prioritas RS-periode, integritas sensor, interval Wilson; laporan `reports/evaluasi.md`, `.json`, grafik; satu-satunya modul yang membaca label |
 | 5 | `sentinel/api/`, `frontend/` | Endpoint dashboard, halaman beranda/detail/audit, panel demo |
 | 6 | `sentinel/agents/` | RAG BM25, empat agen, validator kutipan verbatim, fallback tanpa API key |
 | 7 | `Makefile`, `assets/`, `docs/NASKAH_DEMO.md` | `make demo`, screenshot, naskah video |
