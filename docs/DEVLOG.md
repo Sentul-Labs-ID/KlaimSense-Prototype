@@ -13,6 +13,38 @@ Satu entri per sesi kerja, **terbaru di atas**. Format:
 
 ---
 
+## 2026-10-05 — Pemeliharaan 0.7.1: ganti nama produk menjadi KlaimSense
+- Dikerjakan:
+  - **Repo dan remote.** Repo GitHub diganti nama oleh pemiliknya menjadi `Sentul-Labs-ID/KlaimSense-Prototype`; remote `origin` diperbarui dan `git fetch` berhasil.
+  - **Nama produk JKN-Sentinel → KlaimSense** di semua yang dilihat pengguna:
+    - README (dengan kalimat "sebelumnya bernama JKN-Sentinel") dan bagian atas ROADMAP (dengan catatan nama lama);
+    - judul tab dan header dashboard, pesan galat koneksi frontend;
+    - judul aplikasi FastAPI, docstring, dan deskripsi CLI;
+    - judul `CLAUDE.md`, `docs/ARSITEKTUR.md`, `docs/NASKAH_DEMO.md`, dan DEVLOG;
+    - komentar `config/parameter.yaml`, `.env.example`, dan `Makefile`.
+  - **`reports/evaluasi.md`** dirender ulang dengan `--hanya-laporan` (judul dan kalimat slide). Evaluasi hidden tidak dihitung ulang. SHA-256 sebelum dan sesudah sama:
+    - `evaluasi.json`: `80d697c5d4aaec374e46424473163e46d4b38a8d986e3414f64a8a93f5740678`
+    - `log_evaluasi_hidden.json`: `5c52179bfac2f78749ff459b649136151b0f520aecdaa1b6b2de954b52048351` (tetap 1 jalan)
+    - Kedua PNG dan `verifikasi_reproduksi.json` juga identik per byte.
+  - **Tangkapan layar** direkam ulang (122 detik). 6 berkas berubah; `02b` dan `03` identik karena posisi gulirnya tidak memuat header.
+  - **Video** direkam ulang (3 menit 36 detik, di bawah batas 5 menit): 88,4 detik, waktu langkah bergeser ≤ 0,3 detik dari naskah.
+  - **Tes:** `make test` 204 lulus; `make e2e`, lint, dan build frontend lulus.
+- Keputusan:
+  - **Paket Python `sentinel`, nama basis data, tabel, dan kolom tidak diganti.** Mengganti ini berisiko merusak kode, migrasi, dan perintah yang terdokumentasi, tanpa manfaat bagi pengguna; nama ini tidak tampil di dashboard maupun laporan.
+  - **Nama infrastruktur yang tidak menyentuh kode diganti:**
+    - nama proyek Docker Compose (`klaimsense`; nama container `klaimsense-*`, volume `klaimsense_pgdata` di `make reset-db`);
+    - nama distribusi Python di `pyproject.toml` (`klaimsense`).
+
+    Keduanya hanya label, tetapi terlihat oleh pengembang (`docker ps`, `pip list`).
+  - **Catatan sejarah tidak diubah:** arsip prompt, entri lama DEVLOG/CHANGELOG, Log progres dan Catatan penyimpangan lama, tag `proposal-m1`, dan `reports/*.json`.
+- Dependensi baru: tidak ada.
+- Masalah dan solusi:
+  - **Data dibangun ulang di volume baru.** Nama proyek compose yang baru berarti volume baru, jadi stack lama dihentikan (tanpa menghapus volumenya) dan `make demo` dijalankan ulang: 6 menit 40 detik, termasuk build image dengan nama baru. Tidak ada evaluasi yang dijalankan.
+  - **Sisa di mesin lokal:** volume lama `jkn-sentinel_pgdata` dan image `jkn-sentinel-*` masih ada; bisa dihapus manual.
+  - **Venv lokal** dipasang ulang dengan nama distribusi baru.
+- Penyimpangan dari roadmap: penggantian nama dicatat di `ROADMAP.md` (Catatan penyimpangan).
+- Berikutnya: Fase 6 (RAG dan agen perangkum) bila waktu memungkinkan.
+
 ## 2026-10-03 — Fase 7: paket demo, tangkapan layar, video, README final
 - Dikerjakan (fase 7 sebelum fase 6, keputusan sadar agar paket proposal siap lebih dulu):
   - **`make demo`.** Menjalankan build, layanan `DEMO_MODE=true`, data utama dan hidden, sensor, aturan (satu container), lalu `demo-reset`, dan mencetak alamat dashboard serta 4 langkah demo. Tidak menjalankan evaluasi dan tidak menulis ke `reports/`.

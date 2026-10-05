@@ -11,3 +11,4 @@ Setiap prompt yang dijalankan di Claude Code disimpan **verbatim** di folder ini
 | 4 — Evaluasi akurasi | v1 | [FASE-04_evaluasi.md](FASE-04_evaluasi.md) | 2026-10-03 | Berhasil (1 prompt lanjutan) |
 | 5 — Dashboard petugas (Langkah 4: Putuskan) | v1 | [FASE-05_dashboard.md](FASE-05_dashboard.md) | 2026-10-03 | Berhasil (1 prompt lanjutan) |
 | 7 — Paket demo, tangkapan layar, video, README final | v1 | [FASE-07_paket-demo.md](FASE-07_paket-demo.md) | 2026-10-03 | Berhasil (1 prompt lanjutan); dikerjakan sebelum fase 6 |
+| Pemeliharaan 0.7.1 — Ganti nama produk menjadi KlaimSense | v1 | [PEMELIHARAAN-0.7.1_ganti-nama-klaimsense.md](PEMELIHARAAN-0.7.1_ganti-nama-klaimsense.md) | 2026-10-05 | Berhasil |

@@ -6,6 +6,18 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/), da
 
 ## [Unreleased]
 
+## [0.7.1] - 2026-10-05
+
+Pemeliharaan: nama produk diganti dari JKN-Sentinel menjadi **KlaimSense**, agar sama dengan nama proposal. Logika tidak berubah.
+
+### Changed
+- Nama produk di README, ROADMAP, dashboard (judul tab, header, pesan galat), judul API FastAPI, deskripsi CLI, docstring, dan dokumentasi.
+- Repo GitHub menjadi `Sentul-Labs-ID/KlaimSense-Prototype`; perintah clone di README diperbarui.
+- Nama proyek Docker Compose menjadi `klaimsense` (volume `klaimsense_pgdata`). Pengguna lama perlu menjalankan `make demo` lagi karena data dibangun di volume baru.
+- Nama distribusi Python menjadi `klaimsense`; paket impor tetap `sentinel`.
+- `reports/evaluasi.md` dirender ulang dari `evaluasi.json` yang sama (tanpa evaluasi baru).
+- Tangkapan layar dan video demo di `assets/` direkam ulang dengan nama baru.
+
 ## [0.7.0] - 2026-10-03
 
 Fase 7: paket demo, tangkapan layar, video, dan README final (dikerjakan sebelum fase 6). Snapshot proposal M1: tag `proposal-m1`.
