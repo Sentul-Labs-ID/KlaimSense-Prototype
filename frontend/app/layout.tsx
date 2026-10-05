@@ -5,7 +5,7 @@ import { ambil, type Meta } from "@/lib/api";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "JKN-Sentinel",
+  title: "KlaimSense",
   description: "Setiap klaim harus mungkin terjadi dan wajar tagihannya",
 };
 
@@ -31,7 +31,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <header className="bg-navy text-white">
           <div className="mx-auto flex max-w-[1760px] items-center justify-between px-8 py-4">
             <Link href="/" className="flex items-baseline gap-3">
-              <span className="text-2xl font-bold tracking-tight">JKN-Sentinel</span>
+              <span className="text-2xl font-bold tracking-tight">KlaimSense</span>
               <span className="text-sm text-white/70">Setiap klaim harus mungkin terjadi dan wajar tagihannya</span>
             </Link>
             <nav className="flex gap-2">

@@ -1,5 +1,5 @@
 # =============================================================================
-# Parameter JKN-Sentinel
+# Parameter KlaimSense
 # =============================================================================
 # Semua batas yang dipakai mesin aturan, sensor, dan evaluasi dibaca dari file
 # ini (prinsip 4: parameter tidak di-hardcode).

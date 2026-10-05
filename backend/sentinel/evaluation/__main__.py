@@ -49,7 +49,7 @@ def tulis_keluaran(hasil: dict, direktori: Path) -> None:
 
 
 def main(argv: list[str] | None = None, engine=None, direktori: Path | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="python -m sentinel.evaluation", description="Evaluasi akurasi JKN-Sentinel.")
+    parser = argparse.ArgumentParser(prog="python -m sentinel.evaluation", description="Evaluasi akurasi KlaimSense.")
     parser.add_argument("--dataset", action="append", choices=["utama", "hidden"],
                         help="boleh diulang; default: utama lalu hidden")
     parser.add_argument("--hanya-laporan", action="store_true", help="render ulang dari evaluasi.json tanpa menghitung")

@@ -61,7 +61,7 @@ def kalimat_slide(hidden: dict, proposal: dict) -> str:
     keliru = ditandai["pembilang"]
     tuduhan = "tidak ada tuduhan keliru" if keliru == 0 else f"{keliru} merupakan tuduhan keliru"
     return (
-        f"Pada data uji tersembunyi (data tiruan), JKN-Sentinel mendeteksi {k['pembilang']} dari {k['penyebut']} "
+        f"Pada data uji tersembunyi (data tiruan), KlaimSense mendeteksi {k['pembilang']} dari {k['penyebut']} "
         f"kejadian kecurangan ({persen(k['nilai'])}) dan memasukkan {periksa['pembilang']} dari {periksa['penyebut']} "
         f"periode rumah sakit bermasalah ke daftar periksa petugas ({persen(periksa['nilai'], 0)}). "
         f"Dari {ditandai['penyebut']} periode yang diprioritaskan, {tuduhan}; "
@@ -137,7 +137,7 @@ def render(hasil: dict, catatan_pasca_hidden: str | None = None) -> str:
     u, h = hasil.get("utama"), hasil.get("hidden")
     log = hasil.get("log_hidden") or {}
     baris = [
-        "# Laporan evaluasi akurasi JKN-Sentinel",
+        "# Laporan evaluasi akurasi KlaimSense",
         "",
         "> **Seluruh data adalah data tiruan.** Angka di laporan ini mengukur prototipe pada data simulasi, "
         "bukan kinerja pada klaim JKN asli.",

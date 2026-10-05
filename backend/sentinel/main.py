@@ -1,4 +1,4 @@
-"""Aplikasi FastAPI JKN-Sentinel."""
+"""Aplikasi FastAPI KlaimSense."""
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -12,7 +12,7 @@ from sentinel.api.keputusan import router as router_keputusan
 from sentinel.api.sensor import router as router_sensor
 
 app = FastAPI(
-    title="JKN-Sentinel",
+    title="KlaimSense",
     version=__version__,
     description="Prototype pemeriksaan klaim rumah sakit. Seluruh data adalah data tiruan.",
 )

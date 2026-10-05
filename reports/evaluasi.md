@@ -1,4 +1,4 @@
-# Laporan evaluasi akurasi JKN-Sentinel
+# Laporan evaluasi akurasi KlaimSense
 
 > **Seluruh data adalah data tiruan.** Angka di laporan ini mengukur prototipe pada data simulasi, bukan kinerja pada klaim JKN asli.
 
@@ -48,7 +48,7 @@ Catatan: periode rumah sakit berprioritas yang hanya berisi gangguan sensor: 1/2
 
 **Kalimat siap tempel untuk slide:**
 
-> Pada data uji tersembunyi (data tiruan), JKN-Sentinel mendeteksi 83 dari 86 kejadian kecurangan (96,5%) dan memasukkan 23 dari 28 periode rumah sakit bermasalah ke daftar periksa petugas (82%). Dari 26 periode yang diprioritaskan, tidak ada tuduhan keliru; 2 merupakan kasus sah yang perlu klarifikasi dan 1 merupakan gangguan sensor. Klasifikasi Edge AI pada sensor akurat 97,8%.
+> Pada data uji tersembunyi (data tiruan), KlaimSense mendeteksi 83 dari 86 kejadian kecurangan (96,5%) dan memasukkan 23 dari 28 periode rumah sakit bermasalah ke daftar periksa petugas (82%). Dari 26 periode yang diprioritaskan, tidak ada tuduhan keliru; 2 merupakan kasus sah yang perlu klarifikasi dan 1 merupakan gangguan sensor. Klasifikasi Edge AI pada sensor akurat 97,8%.
 
 ## Deteksi per skenario (recall)
 

@@ -19,7 +19,7 @@ from sentinel.generator.ringkasan import format_ringkasan, ringkasan, sidik
 def buat_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="python -m sentinel.generator",
-        description="Bangkitkan data tiruan JKN-Sentinel (seluruhnya fiktif) beserta ground truth.",
+        description="Bangkitkan data tiruan KlaimSense (seluruhnya fiktif) beserta ground truth.",
     )
     p.add_argument("--dataset", choices=list(PROFIL), default=None, help="dataset_id (default: utama)")
     p.add_argument("--hidden", action="store_true", help="singkatan untuk --dataset hidden (seed default 2026)")

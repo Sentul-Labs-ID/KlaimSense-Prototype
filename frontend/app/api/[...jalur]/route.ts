@@ -22,6 +22,6 @@ export async function POST(request: Request, { params }: RouteContext<"/api/[...
       headers: { "content-type": respons.headers.get("content-type") ?? "application/json" },
     });
   } catch {
-    return Response.json({ detail: "Tidak dapat terhubung ke server JKN-Sentinel." }, { status: 502 });
+    return Response.json({ detail: "Tidak dapat terhubung ke server KlaimSense." }, { status: 502 });
   }
 }

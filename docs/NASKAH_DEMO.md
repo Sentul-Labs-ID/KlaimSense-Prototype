@@ -1,4 +1,4 @@
-# Naskah video demo JKN-Sentinel
+# Naskah video demo KlaimSense
 
 Video: [`assets/demo.webm`](../assets/demo.webm), 1920×1080, ±90 detik (alur ±84 detik, lalu bingkai penutup ditahan). Direkam otomatis dengan `make rekam-demo` dari dataset demo yang baru di-reset. Keterangan bahasa Indonesia tampil di layar pada setiap langkah, sehingga video tetap bisa dipahami tanpa suara. Waktu per langkah tercatat di [`assets/demo_waktu.json`](../assets/demo_waktu.json).
 

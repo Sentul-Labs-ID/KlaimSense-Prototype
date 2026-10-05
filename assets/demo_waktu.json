@@ -1,8 +1,8 @@
 {
-  "durasi_detik": 83.5,
+  "durasi_detik": 83.7,
   "langkah": [
     {
-      "detik": 0.3,
+      "detik": 0.2,
       "langkah": "daftar-periksa",
       "keterangan": "Daftar periksa: semua tagihan tiruan sudah dihitung otomatis dan diurutkan dari prioritas tertinggi."
     },
@@ -12,7 +12,7 @@
       "keterangan": "RS Tiruan 012, Agustus 2026: prioritas rendah, belum ada temuan kapasitas fisioterapi."
     },
     {
-      "detik": 17.9,
+      "detik": 17.8,
       "langkah": "panel-demo",
       "keterangan": "Panel demo: kita sisipkan tagihan fisioterapi fiktif yang melebihi kapasitas terapis selama 3 hari."
     },
@@ -27,32 +27,32 @@
       "keterangan": "Detail rumah sakit: alasan prioritas dan temuan, dengan penjelasan yang bisa dibaca siapa pun."
     },
     {
-      "detik": 41.8,
+      "detik": 41.9,
       "langkah": "grafik",
       "keterangan": "Grafik harian: pada hari bertanda oranye, sesi yang ditagih melampaui garis kapasitas."
     },
     {
-      "detik": 49,
+      "detik": 49.1,
       "langkah": "sensor",
       "keterangan": "Sensor di mesin cuci darah RS Tiruan 026: hijau berarti mesin benar-benar menjalankan terapi."
     },
     {
-      "detik": 55.1,
+      "detik": 55.2,
       "langkah": "verifikasi",
       "keterangan": "Setiap pesan sensor bertanda tangan digital dan berantai: data mesin tidak bisa dipalsukan diam-diam."
     },
     {
-      "detik": 62.2,
+      "detik": 62.3,
       "langkah": "keputusan",
       "keterangan": "Keputusan tetap di tangan petugas: minta klarifikasi kepada rumah sakit, dengan alasan tertulis."
     },
     {
-      "detik": 70.4,
+      "detik": 70.7,
       "langkah": "audit",
       "keterangan": "Audit: setiap keputusan dirantai hash. Rantai utuh berarti tidak ada catatan yang diubah diam-diam."
     },
     {
-      "detik": 77.5,
+      "detik": 77.7,
       "langkah": "penutup",
       "keterangan": "Skor adalah prioritas pemeriksaan, bukan penetapan kecurangan. Keputusan selalu di tangan petugas."
     }

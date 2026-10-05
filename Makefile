@@ -1,4 +1,4 @@
-# JKN-Sentinel — perintah utama.
+# KlaimSense — perintah utama.
 # Resep ditulis sederhana agar jalan di shell Unix maupun Windows.
 
 COMPOSE = docker compose
@@ -16,7 +16,7 @@ down:
 ## Hapus volume database lalu nyalakan ulang database kosong.
 reset-db:
 	$(COMPOSE) rm -s -f db
-	docker volume rm -f jkn-sentinel_pgdata
+	docker volume rm -f klaimsense_pgdata
 	$(COMPOSE) up -d --wait db
 
 ## Jalankan seluruh tes pytest backend di dalam container.
@@ -68,7 +68,7 @@ demo:
 	$(COMPOSE) run --rm backend sh -c "python -m sentinel.generator --dataset utama --seed 42 --days 90 --rs 30 && python -m sentinel.generator --hidden && python -m sentinel.sensor --dataset utama && python -m sentinel.sensor --dataset hidden && python -m sentinel.rules --dataset utama && python -m sentinel.rules --dataset hidden"
 	$(MAKE) demo-reset
 	@echo =====================================================================
-	@echo  JKN-Sentinel siap. Buka dashboard: http://localhost:3000
+	@echo  KlaimSense siap. Buka dashboard: http://localhost:3000
 	@echo  Langkah demo singkat:
 	@echo   1. Daftar periksa: rumah sakit diurutkan dari prioritas tertinggi.
 	@echo   2. Panel demo: pilih RS prioritas rendah, sisipkan fisioterapi melebihi kapasitas 3 hari.

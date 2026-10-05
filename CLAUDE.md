@@ -1,4 +1,4 @@
-# CLAUDE.md — Aturan proyek JKN-Sentinel
+# CLAUDE.md — Aturan proyek KlaimSense
 
 Aturan ini wajib dipatuhi di **semua fase**. Jika ada konflik dengan instruksi lain, hentikan dan tanyakan.
 

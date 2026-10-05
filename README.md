@@ -1,12 +1,12 @@
-# JKN-Sentinel
+# KlaimSense
 
 > **Seluruh data di repositori ini adalah data tiruan.** Tidak ada data peserta JKN, rumah sakit, maupun klaim asli yang dipakai, diunduh, atau disimpan. Nama rumah sakit adalah samaran, pasien memakai ID pseudonim (`P-000123`), dan semua harga serta sinyal sensor adalah simulasi.
 
-Prototipe untuk proposal **BPJS Kesehatan Healthkathon 2026**, kategori Efisiensi Risiko pada Fasilitas Kesehatan, oleh tim **Sentul Labs** (Rifandi Indrayudha Prawira, Joesavat Donovan, Akbar).
+Prototipe untuk proposal **BPJS Kesehatan Healthkathon 2026**, kategori Efisiensi Risiko pada Fasilitas Kesehatan, oleh tim **Sentul Labs** (Rifandi Indrayudha Prawira, Joesavat Donovan, Akbar). Proyek ini sebelumnya bernama JKN-Sentinel.
 
-## Apa itu JKN-Sentinel?
+## Apa itu KlaimSense?
 
-Setiap hari rumah sakit mengirim tagihan ke BPJS untuk layanan peserta JKN. JKN-Sentinel memeriksa setiap tagihan dengan dua pertanyaan sederhana: **mungkinkah layanan ini benar-benar terjadi** dengan tenaga, mesin, dan jam kerja yang dimiliki rumah sakit, dan **wajarkah tagihannya** menurut harga acuan dan aturan penggantian alat. Bila sebuah rumah sakit menagih lebih banyak sesi cuci darah daripada yang muat di mesinnya, atau mesinnya menurut sensor tidak bekerja selama yang ditagih, sistem menaikkan rumah sakit itu dalam daftar periksa beserta penjelasan yang bisa dibaca siapa pun. Sistem tidak menuduh: **skor adalah prioritas pemeriksaan, bukan penetapan kecurangan**, dan keputusan selalu di tangan petugas setelah rumah sakit diberi kesempatan menjelaskan.
+Setiap hari rumah sakit mengirim tagihan ke BPJS untuk layanan peserta JKN. KlaimSense memeriksa setiap tagihan dengan dua pertanyaan sederhana: **mungkinkah layanan ini benar-benar terjadi** dengan tenaga, mesin, dan jam kerja yang dimiliki rumah sakit, dan **wajarkah tagihannya** menurut harga acuan dan aturan penggantian alat. Bila sebuah rumah sakit menagih lebih banyak sesi cuci darah daripada yang muat di mesinnya, atau mesinnya menurut sensor tidak bekerja selama yang ditagih, sistem menaikkan rumah sakit itu dalam daftar periksa beserta penjelasan yang bisa dibaca siapa pun. Sistem tidak menuduh: **skor adalah prioritas pemeriksaan, bukan penetapan kecurangan**, dan keputusan selalu di tangan petugas setelah rumah sakit diberi kesempatan menjelaskan.
 
 ![Daftar periksa](assets/01_daftar-periksa.png)
 
@@ -53,8 +53,8 @@ Memasang `make` di Windows: `winget install ezwinports.make`, lalu buka ulang te
 ### Demo dari awal
 
 ```bash
-git clone https://github.com/Sentul-Labs-ID/JKN-Sentinel-Prototype.git
-cd JKN-Sentinel-Prototype
+git clone https://github.com/Sentul-Labs-ID/KlaimSense-Prototype.git
+cd KlaimSense-Prototype
 cp .env.example .env
 make demo          # build, data tiruan, sensor, aturan, dataset demo (±5 menit; lebih lama bila image Docker belum ada)
 ```

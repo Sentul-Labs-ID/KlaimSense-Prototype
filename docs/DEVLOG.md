@@ -1,4 +1,4 @@
-# DEVLOG — JKN-Sentinel
+# DEVLOG — KlaimSense
 
 Satu entri per sesi kerja, **terbaru di atas**. Format:
 

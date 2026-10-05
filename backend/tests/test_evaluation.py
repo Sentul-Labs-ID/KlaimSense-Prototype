@@ -245,7 +245,7 @@ def test_kalimat_slide_konsisten_dengan_angka():
         "akurasi_edge_ai": m.proporsi(16892, 17280),
     }
     assert kalimat_slide(hidden, proposal) == (
-        "Pada data uji tersembunyi (data tiruan), JKN-Sentinel mendeteksi 83 dari 86 kejadian kecurangan (96,5%) dan "
+        "Pada data uji tersembunyi (data tiruan), KlaimSense mendeteksi 83 dari 86 kejadian kecurangan (96,5%) dan "
         "memasukkan 23 dari 28 periode rumah sakit bermasalah ke daftar periksa petugas (82%). Dari 26 periode yang "
         "diprioritaskan, tidak ada tuduhan keliru; 2 merupakan kasus sah yang perlu klarifikasi dan 1 merupakan gangguan "
         "sensor. Klasifikasi Edge AI pada sensor akurat 97,8%."

@@ -1,9 +1,11 @@
-# ROADMAP — JKN-Sentinel Prototype
+# ROADMAP — KlaimSense Prototype
 
 Prototype untuk proposal **BPJS Kesehatan Healthkathon 2026**, kategori Efisiensi Risiko pada Fasilitas Kesehatan.
 Tim: Sentul Labs (Rifandi Indrayudha Prawira, Joesavat Donovan, Akbar).
 
-JKN-Sentinel memeriksa setiap tagihan (klaim) rumah sakit ke BPJS dengan dua pertanyaan:
+> Sebelumnya bernama JKN-Sentinel; diganti 2026-10-05 agar sama dengan nama proposal.
+
+KlaimSense memeriksa setiap tagihan (klaim) rumah sakit ke BPJS dengan dua pertanyaan:
 
 1. **Mungkinkah layanan ini terjadi** dengan kapasitas nyata rumah sakit (tenaga, mesin, tempat tidur)?
 2. **Wajarkah tagihannya** menurut aturan (harga acuan, masa penggantian alat, batas jumlah)?
@@ -219,7 +221,7 @@ Semua parameter ada di `config/parameter.yaml`. Nilai default hanya ilustratif s
 ## Struktur repo target
 
 ```
-JKN-Sentinel-Prototype/
+KlaimSense-Prototype/
 ├── ROADMAP.md
 ├── README.md
 ├── CHANGELOG.md

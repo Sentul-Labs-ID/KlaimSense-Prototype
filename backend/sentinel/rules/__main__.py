@@ -88,7 +88,7 @@ def ringkasan(m: Masukan, h: HasilAturan, teratas: int = 10) -> str:
 
 
 def main(argv: list[str] | None = None, engine: Engine | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="python -m sentinel.rules", description="Jalankan mesin aturan JKN-Sentinel.")
+    parser = argparse.ArgumentParser(prog="python -m sentinel.rules", description="Jalankan mesin aturan KlaimSense.")
     parser.add_argument("--dataset", choices=["utama", "hidden", "demo"], default="utama")
     parser.add_argument("--parameter", default=None, help="path parameter.yaml (default: PARAMETER_PATH)")
     args = parser.parse_args(argv)

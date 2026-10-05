@@ -1,4 +1,4 @@
-# Arsitektur JKN-Sentinel
+# Arsitektur KlaimSense
 
 > Seluruh data adalah data tiruan. Sistem memberi prioritas pemeriksaan, bukan vonis.
 

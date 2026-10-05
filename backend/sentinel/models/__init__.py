@@ -1,4 +1,4 @@
-"""Skema database JKN-Sentinel (SQLAlchemy 2.x).
+"""Skema database KlaimSense (SQLAlchemy 2.x).
 
 Tabel dikelompokkan menurut siapa yang boleh membacanya:
 

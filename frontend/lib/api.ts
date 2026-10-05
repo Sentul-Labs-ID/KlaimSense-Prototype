@@ -140,7 +140,7 @@ export async function ambil<T>(jalur: string, params: Record<string, string | un
   try {
     respons = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(15000) });
   } catch {
-    throw new GalatBackend("Tidak dapat terhubung ke server JKN-Sentinel. Pastikan layanan backend berjalan.");
+    throw new GalatBackend("Tidak dapat terhubung ke server KlaimSense. Pastikan layanan backend berjalan.");
   }
   if (!respons.ok) {
     const isi = await respons.json().catch(() => ({}));
